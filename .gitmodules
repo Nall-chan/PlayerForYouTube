@@ -1,0 +1,15 @@
+[submodule "libs/helper"]
+	path = libs/helper
+	url = https://github.com/Nall-chan/SymconModulHelper
+[submodule "tests/stubs"]
+	path = tests/stubs
+	url = https://github.com/Nall-chan/SymconStubs
+[submodule ".style"]
+	path = .style
+	url = https://github.com/Nall-chan/StylePHP
+[submodule ".vscode"]
+	path = .vscode
+	url = https://github.com/Nall-chan/SymconVSCTasks.git
+[submodule ".claude-rules"]
+	path = .claude-rules
+	url = https://github.com/Nall-chan/symcon-module-rules.git
