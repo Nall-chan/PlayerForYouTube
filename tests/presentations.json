@@ -1,0 +1,57 @@
+{
+    "_comment": "Parameterlisten der Darstellungen aus IPS_GetPresentations (Symcon 9.1 Rust-Edition, 2026-10-29). Nur die von dieser Library genutzten Darstellungen. type: bool, int, string, float oder variableType (Typ der Variable).",
+    "{2F0FF5B0-FC86-117B-DDAA-2D2D33C3F8AC}": {
+        "name": "Playback",
+        "variableTypes": [1, 2],
+        "requestAction": null,
+        "parameters": {}
+    },
+    "{3319437D-7CDE-699D-750A-3C6A3841FA75}": {
+        "name": "Value Presentation",
+        "variableTypes": [0, 1, 2, 3],
+        "requestAction": false,
+        "parameters": {
+            "COLOR": {"type": "int"},
+            "CONTENT_COLOR": {"type": "int"},
+            "DISPLAY_TYPE": {"type": "int", "values": [0, 1]},
+            "ICON": {"type": "string"},
+            "PERCENTAGE": {"type": "bool"},
+            "PREFIX": {"type": "string"},
+            "PREVIEW_STYLE": {"type": "int", "values": [0, 1, 2]},
+            "SHOW_PREVIEW": {"type": "bool"},
+            "SUFFIX": {"type": "string"},
+            "USAGE_TYPE": {"type": "int", "values": [0, 1]},
+            "MULTILINE": {"type": "bool", "variableTypes": [3]},
+            "DIGITS": {"type": "int", "variableTypes": [1, 2]},
+            "MIN": {"type": "variableType", "variableTypes": [1, 2]},
+            "MAX": {"type": "variableType", "variableTypes": [1, 2]}
+        }
+    },
+    "{6B9CAEEC-5958-C223-30F7-BD36569FC57A}": {
+        "name": "Slider",
+        "variableTypes": [1, 2],
+        "requestAction": true,
+        "parameters": {
+            "DIGITS": {"type": "int"},
+            "GRADIENT_TYPE": {"type": "int", "values": [0, 1, 2, 3, 4]},
+            "ICON": {"type": "string"},
+            "MAX": {"type": "variableType"},
+            "MIN": {"type": "variableType"},
+            "PERCENTAGE": {"type": "bool"},
+            "PREFIX": {"type": "string"},
+            "STEP_SIZE": {"type": "variableType"},
+            "SUFFIX": {"type": "string"},
+            "USAGE_TYPE": {"type": "int", "values": [0, 1, 2, 3, 4, 5, 6]}
+        }
+    },
+    "{08A6AF76-394E-D354-48D5-BFC690488E4E}": {
+        "name": "Duration",
+        "variableTypes": [1, 2],
+        "requestAction": false,
+        "parameters": {
+            "COUNTDOWN_TYPE": {"type": "int", "values": [0, 1, 2]},
+            "FORMAT": {"type": "int", "values": [0, 1, 2, 3]},
+            "MILLISECONDS": {"type": "bool"}
+        }
+    }
+}

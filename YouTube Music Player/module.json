@@ -1,0 +1,18 @@
+{
+    "id": "{432AD6E7-A9AC-44D5-A26E-962C77035C9D}",
+    "name": "YouTube Music Player",
+    "type": 3,
+    "vendor": "",
+    "aliases": [
+        "YouTube Player"
+    ],
+    "parentRequirements": [
+        "{7D679ECD-446F-401E-B62C-FB1CDAB71880}"
+    ],
+    "childRequirements": [],
+    "implemented": [
+        "{077870C0-B790-4D1C-9A9E-E64E730710F2}"
+    ],
+    "prefix": "YTM",
+    "url": "https://github.com/Nall-chan/YouTubeMusic/blob/main/YouTube%20Music%20Player/README.md"
+}

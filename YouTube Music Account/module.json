@@ -1,0 +1,18 @@
+{
+    "id": "{B2338A56-F57D-47A5-90BD-2C7E4FE3033B}",
+    "name": "YouTube Music Account",
+    "type": 1,
+    "vendor": "",
+    "aliases": [
+        "YouTube Account"
+    ],
+    "parentRequirements": [],
+    "childRequirements": [
+        "{077870C0-B790-4D1C-9A9E-E64E730710F2}"
+    ],
+    "implemented": [
+        "{7D679ECD-446F-401E-B62C-FB1CDAB71880}"
+    ],
+    "prefix": "YTM",
+    "url": "https://github.com/Nall-chan/YouTubeMusic/blob/main/YouTube%20Music%20Account/README.md"
+}

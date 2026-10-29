@@ -1,0 +1,861 @@
+{
+    "contents": {
+        "singleColumnMusicWatchNextResultsRenderer": {
+            "tabbedRenderer": {
+                "watchNextTabbedResultsRenderer": {
+                    "tabs": [
+                        {
+                            "tabRenderer": {
+                                "title": "Nächster Titel",
+                                "content": {
+                                    "musicQueueRenderer": {
+                                        "content": {
+                                            "playlistPanelRenderer": {
+                                                "contents": [
+                                                    {
+                                                        "playlistPanelVideoRenderer": {
+                                                            "title": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Get Lucky (feat. Pharrell Williams and Nile Rodgers)"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "longBylineText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Daft Punk",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "UCRr1xG_2WIDs18a6cIiCxeA",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": ", "
+                                                                    },
+                                                                    {
+                                                                        "text": "Pharrell Williams",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "UCJw8VyO6e3v6S0327AsgwcQ",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": " und "
+                                                                    },
+                                                                    {
+                                                                        "text": "Nile Rodgers",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "UCThde8ccpEr6sP8dIHZ-ceQ",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": " • "
+                                                                    },
+                                                                    {
+                                                                        "text": "Random Access Memories",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "MPREb_K8qWMWVqXGi",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": " • "
+                                                                    },
+                                                                    {
+                                                                        "text": "2013"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "thumbnail": {
+                                                                "thumbnails": [
+                                                                    {
+                                                                        "url": "https://yt3.googleusercontent.com/N55arCGj69gtw6thXK8JUPisxoVYiwuIEQ7I6SGlkEyNcSJ7xIWPe76Vuu1SiUqRyx5w9qvR_zV8fV3CWQ=w544-h544-l90-rj",
+                                                                        "width": 544,
+                                                                        "height": 544
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "lengthText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "6:10"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "selected": true,
+                                                            "navigationEndpoint": {
+                                                                "watchEndpoint": {
+                                                                    "videoId": "4D7u5KF7SP8",
+                                                                    "playlistId": "RDAMVM4D7u5KF7SP8",
+                                                                    "index": 0,
+                                                                    "params": "OAHyAQIIAQ%3D%3D",
+                                                                    "playerParams": "8AUBygYQNTZCNDRGNkQxMDU1N0NDNrAIAg%3D%3D",
+                                                                    "playlistSetVideoId": "56B44F6D10557CC6",
+                                                                    "watchEndpointMusicSupportedConfigs": {
+                                                                        "watchEndpointMusicConfig": {
+                                                                            "hasPersistentPlaylistPanel": true,
+                                                                            "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "videoId": "4D7u5KF7SP8",
+                                                            "shortBylineText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Daft Punk"
+                                                                    },
+                                                                    {
+                                                                        "text": ", "
+                                                                    },
+                                                                    {
+                                                                        "text": "Pharrell Williams"
+                                                                    },
+                                                                    {
+                                                                        "text": " und "
+                                                                    },
+                                                                    {
+                                                                        "text": "Nile Rodgers"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "playlistSetVideoId": "56B44F6D10557CC6",
+                                                            "canReorder": true,
+                                                            "queueNavigationEndpoint": {
+                                                                "queueAddEndpoint": {
+                                                                    "queueTarget": {
+                                                                        "videoId": "4D7u5KF7SP8"
+                                                                    },
+                                                                    "queueInsertPosition": "INSERT_AT_END",
+                                                                    "params": "Q0FJJTNE"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "playlistPanelVideoRenderer": {
+                                                            "title": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "I Feel It Coming (feat. Daft Punk)"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "longBylineText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "The Weeknd",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "UClYV6hHlupm_S_ObS1W-DYw",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": " • "
+                                                                    },
+                                                                    {
+                                                                        "text": "Starboy",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "MPREb_FWIMEPTHFsY",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": " • "
+                                                                    },
+                                                                    {
+                                                                        "text": "2016"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "thumbnail": {
+                                                                "thumbnails": [
+                                                                    {
+                                                                        "url": "https://yt3.googleusercontent.com/dcxXIIlest09vnvKznWM9VWQXu1EL7lKxBzXGzwgmVjmMNBm1dEWT_0qn1xrEZYyKF_qRE1TLq8P_JY_mQ=w544-h544-l90-rj",
+                                                                        "width": 544,
+                                                                        "height": 544
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "lengthText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "4:30"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "selected": false,
+                                                            "navigationEndpoint": {
+                                                                "watchEndpoint": {
+                                                                    "videoId": "qPRNIHxLhmc",
+                                                                    "playlistId": "RDAMVM4D7u5KF7SP8",
+                                                                    "index": 1,
+                                                                    "params": "OAHyAQIIAQ%3D%3D",
+                                                                    "playerParams": "8AUBygYQMjg5RjRBNDZERjBBMzBEMrAIAg%3D%3D",
+                                                                    "playlistSetVideoId": "289F4A46DF0A30D2",
+                                                                    "watchEndpointMusicSupportedConfigs": {
+                                                                        "watchEndpointMusicConfig": {
+                                                                            "hasPersistentPlaylistPanel": true,
+                                                                            "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "videoId": "qPRNIHxLhmc",
+                                                            "shortBylineText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "The Weeknd"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "playlistSetVideoId": "289F4A46DF0A30D2",
+                                                            "canReorder": true,
+                                                            "queueNavigationEndpoint": {
+                                                                "queueAddEndpoint": {
+                                                                    "queueTarget": {
+                                                                        "videoId": "qPRNIHxLhmc"
+                                                                    },
+                                                                    "queueInsertPosition": "INSERT_AT_END",
+                                                                    "params": "Q0FJJTNE"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "playlistPanelVideoRenderer": {
+                                                            "title": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Happy (From \"Despicable Me 2\")"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "longBylineText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Pharrell Williams",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "UCJw8VyO6e3v6S0327AsgwcQ",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ARTIST"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": " • "
+                                                                    },
+                                                                    {
+                                                                        "text": "G I R L",
+                                                                        "navigationEndpoint": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "MPREb_I3SbfnNDbxW",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_ALBUM"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "text": " • "
+                                                                    },
+                                                                    {
+                                                                        "text": "2014"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "thumbnail": {
+                                                                "thumbnails": [
+                                                                    {
+                                                                        "url": "https://yt3.googleusercontent.com/Ek9yuai1tNRCy9-jRpJFNHiGt0G7970UV5PhhIWe3I30LLOO7QziPq2Z3dKXmSH2l_uDJl1C1xoeefUi=w544-h544-s-l90-rj",
+                                                                        "width": 544,
+                                                                        "height": 544
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "lengthText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "3:54"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "selected": false,
+                                                            "navigationEndpoint": {
+                                                                "watchEndpoint": {
+                                                                    "videoId": "dJqxQzxLbHM",
+                                                                    "playlistId": "RDAMVM4D7u5KF7SP8",
+                                                                    "index": 2,
+                                                                    "params": "OAHyAQIIAQ%3D%3D",
+                                                                    "playerParams": "8AUBygYQMDE3MjA4RkFBODUyMzNGObAIAg%3D%3D",
+                                                                    "playlistSetVideoId": "017208FAA85233F9",
+                                                                    "watchEndpointMusicSupportedConfigs": {
+                                                                        "watchEndpointMusicConfig": {
+                                                                            "hasPersistentPlaylistPanel": true,
+                                                                            "musicVideoType": "MUSIC_VIDEO_TYPE_ATV"
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "videoId": "dJqxQzxLbHM",
+                                                            "shortBylineText": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Pharrell Williams"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "playlistSetVideoId": "017208FAA85233F9",
+                                                            "canReorder": true,
+                                                            "queueNavigationEndpoint": {
+                                                                "queueAddEndpoint": {
+                                                                    "queueTarget": {
+                                                                        "videoId": "dJqxQzxLbHM"
+                                                                    },
+                                                                    "queueInsertPosition": "INSERT_AT_END",
+                                                                    "params": "Q0FJJTNE"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ],
+                                                "playlistId": "RDAMVM4D7u5KF7SP8",
+                                                "isInfinite": true,
+                                                "continuations": [
+                                                    {
+                                                        "nextRadioContinuationData": {
+                                                            "continuation": "CDISOBILR2llUXEzZVdTbkUiEVJEQU1WTTREN3U1S0Y3U1A4ODHQAQH6ARBENjI1QUI0MDI5NEQzODFEGAo%3D"
+                                                        }
+                                                    }
+                                                ],
+                                                "numItemsToShow": 25,
+                                                "shuffleToggleButton": {
+                                                    "toggleButtonRenderer": {
+                                                        "defaultIcon": {
+                                                            "iconType": "MUSIC_SHUFFLE"
+                                                        },
+                                                        "defaultServiceEndpoint": {
+                                                            "watchPlaylistEndpoint": {
+                                                                "playlistId": "RDAMVM4D7u5KF7SP8",
+                                                                "params": "wAEB8gECGAE%3D"
+                                                            }
+                                                        },
+                                                        "toggledIcon": {
+                                                            "iconType": "MUSIC_SHUFFLE"
+                                                        },
+                                                        "toggledServiceEndpoint": {
+                                                            "watchPlaylistEndpoint": {
+                                                                "playlistId": "RDAMVM4D7u5KF7SP8",
+                                                                "params": "wAEB"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "hack": true,
+                                        "musicQueueConfig": [],
+                                        "header": {
+                                            "musicQueueHeaderRenderer": {
+                                                "title": {
+                                                    "runs": [
+                                                        {
+                                                            "text": "Wiedergabe über"
+                                                        }
+                                                    ]
+                                                },
+                                                "subtitle": {
+                                                    "runs": [
+                                                        {
+                                                            "text": "Mix – Get Lucky (feat. Pharrell Williams and Nile Rodgers)"
+                                                        }
+                                                    ]
+                                                },
+                                                "buttons": [
+                                                    {
+                                                        "chipCloudChipRenderer": {
+                                                            "style": {
+                                                                "styleType": "STYLE_TRANSPARENT"
+                                                            },
+                                                            "text": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Speichern"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "navigationEndpoint": {
+                                                                "modalEndpoint": {
+                                                                    "modal": {
+                                                                        "modalWithTitleAndButtonRenderer": {
+                                                                            "title": {
+                                                                                "runs": [
+                                                                                    {
+                                                                                        "text": "Für später speichern?"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "content": {
+                                                                                "runs": [
+                                                                                    {
+                                                                                        "text": "Nach der Anmeldung kannst du Playlists erstellen und teilen"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "button": {
+                                                                                "buttonRenderer": {
+                                                                                    "style": "STYLE_BLUE_TEXT",
+                                                                                    "isDisabled": false,
+                                                                                    "text": {
+                                                                                        "runs": [
+                                                                                            {
+                                                                                                "text": "Anmelden"
+                                                                                            }
+                                                                                        ]
+                                                                                    },
+                                                                                    "navigationEndpoint": {
+                                                                                        "signInEndpoint": {
+                                                                                            "hack": true
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "saveQueueToPlaylistCommand": []
+                                                            },
+                                                            "icon": {
+                                                                "iconType": "ADD_TO_PLAYLIST"
+                                                            },
+                                                            "isSelected": false,
+                                                            "uniqueId": "Speichern"
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "subHeaderChipCloud": {
+                                            "chipCloudRenderer": {
+                                                "chips": [
+                                                    {
+                                                        "chipCloudChipRenderer": {
+                                                            "text": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Alle"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "navigationEndpoint": {
+                                                                "queueUpdateCommand": {
+                                                                    "queueUpdateSection": "QUEUE_UPDATE_SECTION_QUEUE",
+                                                                    "fetchContentsCommand": {
+                                                                        "watchEndpoint": {
+                                                                            "playlistId": "RDAMVM4D7u5KF7SP8",
+                                                                            "params": "ggUMRWdBWUFRJTNEJTNE"
+                                                                        }
+                                                                    },
+                                                                    "dedupeAgainstLocalQueue": true,
+                                                                    "syncMode": "QUEUE_UPDATE_SYNC_MODE_DEDUPE_AGAINST_LOCAL"
+                                                                }
+                                                            },
+                                                            "isSelected": true,
+                                                            "uniqueId": "Alle"
+                                                        }
+                                                    },
+                                                    {
+                                                        "chipCloudChipRenderer": {
+                                                            "text": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Beliebt"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "navigationEndpoint": {
+                                                                "queueUpdateCommand": {
+                                                                    "queueUpdateSection": "QUEUE_UPDATE_SECTION_QUEUE",
+                                                                    "fetchContentsCommand": {
+                                                                        "watchEndpoint": {
+                                                                            "playlistId": "RDATpYv4D7u5KF7SP8",
+                                                                            "params": "ggU4Q2hKU1JFRlVjRmwyTkVRM2RUVkxSamRUVURnWUN5SU5DZ2RDWld4cFpXSjBHZ0prWlElM0QlM0Q%3D",
+                                                                            "playerParams": "0gcJCWoAt9Zurpe2"
+                                                                        }
+                                                                    },
+                                                                    "dedupeAgainstLocalQueue": true,
+                                                                    "syncMode": "QUEUE_UPDATE_SYNC_MODE_DEDUPE_AGAINST_LOCAL"
+                                                                }
+                                                            },
+                                                            "isSelected": false,
+                                                            "uniqueId": "Beliebt"
+                                                        }
+                                                    },
+                                                    {
+                                                        "chipCloudChipRenderer": {
+                                                            "text": {
+                                                                "runs": [
+                                                                    {
+                                                                        "text": "Neu entdecken"
+                                                                    }
+                                                                ]
+                                                            },
+                                                            "navigationEndpoint": {
+                                                                "queueUpdateCommand": {
+                                                                    "queueUpdateSection": "QUEUE_UPDATE_SECTION_QUEUE",
+                                                                    "fetchContentsCommand": {
+                                                                        "watchEndpoint": {
+                                                                            "playlistId": "RDATiXv4D7u5KF7SP8",
+                                                                            "params": "ggVAQ2hKU1JFRlVhVmgyTkVRM2RUVkxSamRUVURnWUN5SVRDZzFPWlhVZ1pXNTBaR1ZqYTJWdUdnSmtaUSUzRCUzRA%3D%3D"
+                                                                        }
+                                                                    },
+                                                                    "dedupeAgainstLocalQueue": true,
+                                                                    "syncMode": "QUEUE_UPDATE_SYNC_MODE_DEDUPE_AGAINST_LOCAL"
+                                                                }
+                                                            },
+                                                            "isSelected": false,
+                                                            "uniqueId": "Neu entdecken"
+                                                        }
+                                                    }
+                                                ],
+                                                "selectionBehavior": "CHIP_CLOUD_SELECTION_BEHAVIOR_SINGLE_SELECT_ALWAYS_SELECTED"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "tabRenderer": {
+                                "endpoint": {
+                                    "browseEndpoint": {
+                                        "browseId": "MPLYt_K8qWMWVqXGi-8",
+                                        "browseEndpointContextSupportedConfigs": {
+                                            "browseEndpointContextMusicConfig": {
+                                                "pageType": "MUSIC_PAGE_TYPE_TRACK_LYRICS"
+                                            }
+                                        }
+                                    }
+                                },
+                                "title": "Songtext"
+                            }
+                        },
+                        {
+                            "tabRenderer": {
+                                "title": "Kommentare",
+                                "content": {
+                                    "sectionListRenderer": {
+                                        "continuations": [
+                                            {
+                                                "reloadContinuationData": {
+                                                    "continuation": "Eg0SCzREN3U1S0Y3U1A4GAYyHCINIgs0RDd1NUtGN1NQOEILNEQ3dTVLRjdTUDhqCzREN3U1S0Y3U1A4"
+                                                }
+                                            }
+                                        ],
+                                        "targetId": "4D7u5KF7SP8"
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "tabRenderer": {
+                                "endpoint": {
+                                    "browseEndpoint": {
+                                        "browseId": "MPTRt_K8qWMWVqXGi-8",
+                                        "browseEndpointContextSupportedConfigs": {
+                                            "browseEndpointContextMusicConfig": {
+                                                "pageType": "MUSIC_PAGE_TYPE_TRACK_RELATED"
+                                            }
+                                        }
+                                    }
+                                },
+                                "title": "Ähnliche Titel"
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "currentVideoEndpoint": {
+        "watchEndpoint": {
+            "videoId": "4D7u5KF7SP8",
+            "playlistId": "RDAMVM4D7u5KF7SP8",
+            "index": 0,
+            "playerParams": "ygYQNTZCNDRGNkQxMDU1N0NDNg%3D%3D",
+            "playlistSetVideoId": "56B44F6D10557CC6"
+        }
+    },
+    "playerOverlays": {
+        "playerOverlayRenderer": {
+            "actions": [
+                {
+                    "likeButtonRenderer": {
+                        "target": {
+                            "videoId": "4D7u5KF7SP8"
+                        },
+                        "likeStatus": "INDIFFERENT",
+                        "likesAllowed": true,
+                        "dislikeNavigationEndpoint": {
+                            "modalEndpoint": {
+                                "modal": {
+                                    "modalWithTitleAndButtonRenderer": {
+                                        "title": {
+                                            "runs": [
+                                                {
+                                                    "text": "Gefällt dir nicht so?"
+                                                }
+                                            ]
+                                        },
+                                        "content": {
+                                            "runs": [
+                                                {
+                                                    "text": "Nach der Anmeldung erhältst du bessere Empfehlungen"
+                                                }
+                                            ]
+                                        },
+                                        "button": {
+                                            "buttonRenderer": {
+                                                "style": "STYLE_BLUE_TEXT",
+                                                "isDisabled": false,
+                                                "text": {
+                                                    "runs": [
+                                                        {
+                                                            "text": "Anmelden"
+                                                        }
+                                                    ]
+                                                },
+                                                "navigationEndpoint": {
+                                                    "signInEndpoint": {
+                                                        "hack": true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "likeCommand": {
+                            "modalEndpoint": {
+                                "modal": {
+                                    "modalWithTitleAndButtonRenderer": {
+                                        "title": {
+                                            "runs": [
+                                                {
+                                                    "text": "Gefällt dir der Titel?"
+                                                }
+                                            ]
+                                        },
+                                        "content": {
+                                            "runs": [
+                                                {
+                                                    "text": "Nach der Anmeldung erhältst du bessere Empfehlungen und kannst Musik speichern"
+                                                }
+                                            ]
+                                        },
+                                        "button": {
+                                            "buttonRenderer": {
+                                                "style": "STYLE_BLUE_TEXT",
+                                                "isDisabled": false,
+                                                "text": {
+                                                    "runs": [
+                                                        {
+                                                            "text": "Anmelden"
+                                                        }
+                                                    ]
+                                                },
+                                                "navigationEndpoint": {
+                                                    "signInEndpoint": {
+                                                        "hack": true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            ],
+            "browserMediaSession": {
+                "browserMediaSessionRenderer": {
+                    "album": {
+                        "runs": [
+                            {
+                                "text": "Random Access Memories"
+                            }
+                        ]
+                    },
+                    "thumbnailDetails": {
+                        "thumbnails": [
+                            {
+                                "url": "https://yt3.googleusercontent.com/N55arCGj69gtw6thXK8JUPisxoVYiwuIEQ7I6SGlkEyNcSJ7xIWPe76Vuu1SiUqRyx5w9qvR_zV8fV3CWQ=w544-h544-l90-rj",
+                                "width": 544,
+                                "height": 544
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "videoReporting": {
+        "reportFormModalRenderer": {
+            "optionsSupportedRenderers": {
+                "optionsRenderer": {
+                    "items": [
+                        {
+                            "optionSelectableItemRenderer": {
+                                "text": {
+                                    "runs": [
+                                        {
+                                            "text": "Sexuelle Inhalte"
+                                        }
+                                    ]
+                                },
+                                "submitEndpoint": {
+                                    "flagEndpoint": {
+                                        "flagAction": "EAciDwoLNEQ3dTVLRjdTUDhQBTILNEQ3dTVLRjdTUDiQASyYAQGoAQM%3D"
+                                    }
+                                },
+                                "clickCommands": [
+                                    {
+                                        "modifyReportFormCommand": {
+                                            "action": "REPORT_FORM_ACTION_LEGAL_CHECKBOX_SHOW"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "optionSelectableItemRenderer": {
+                                "text": {
+                                    "runs": [
+                                        {
+                                            "text": "Gewalt darstellende oder abstoßende Inhalte"
+                                        }
+                                    ]
+                                },
+                                "submitEndpoint": {
+                                    "flagEndpoint": {
+                                        "flagAction": "EAciDwoLNEQ3dTVLRjdTUDhQBTILNEQ3dTVLRjdTUDiQATaYAQGoAQM%3D"
+                                    }
+                                },
+                                "clickCommands": [
+                                    {
+                                        "modifyReportFormCommand": {
+                                            "action": "REPORT_FORM_ACTION_LEGAL_CHECKBOX_SHOW"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "optionSelectableItemRenderer": {
+                                "text": {
+                                    "runs": [
+                                        {
+                                            "text": "Hasserfüllte oder beleidigende Inhalte"
+                                        }
+                                    ]
+                                },
+                                "submitEndpoint": {
+                                    "flagEndpoint": {
+                                        "flagAction": "EAciDwoLNEQ3dTVLRjdTUDhQBTILNEQ3dTVLRjdTUDiQARSYAQGoAQM%3D"
+                                    }
+                                },
+                                "clickCommands": [
+                                    {
+                                        "modifyReportFormCommand": {
+                                            "action": "REPORT_FORM_ACTION_LEGAL_CHECKBOX_SHOW"
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            },
+            "title": {
+                "runs": [
+                    {
+                        "text": "Video melden"
+                    }
+                ]
+            },
+            "submitButton": {
+                "buttonRenderer": {
+                    "style": "STYLE_BRAND",
+                    "isDisabled": true,
+                    "text": {
+                        "runs": [
+                            {
+                                "text": "Melden"
+                            }
+                        ]
+                    }
+                }
+            },
+            "cancelButton": {
+                "buttonRenderer": {
+                    "style": "STYLE_TEXT",
+                    "isDisabled": false,
+                    "text": {
+                        "runs": [
+                            {
+                                "text": "Abbrechen"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "queueContextParams": "CAIaEVJEQU1WTTREN3U1S0Y3U1A4ILe87uXq3pcDMgs0RDd1NUtGN1NQODoQNTZCNDRGNkQxMDU1N0NDNkIRUkRBTVZNNEQ3dTVLRjdTUDhQAVoECAAQAWIAcAF4AQ=="
+}

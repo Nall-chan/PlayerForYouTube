@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>/*STYLE*/</style>
+</head>
+<body>
+<div id="app" class="app">
+  <!-- Cover weichgezeichnet als Farbverlauf hinter dem Player -->
+  <div id="bg" class="bg"></div>
+  <!-- Voll: Navigation und Inhalte (views.js), darunter der Mini-Player -->
+  <main id="content" class="content">
+    <nav id="nav" class="nav"></nav>
+    <section class="view">
+      <header class="view-head">
+        <button id="vBack" class="icon-btn" hidden></button>
+        <div class="view-title"><h1 id="vTitle"></h1><small id="vSub"></small>
+          <button id="vPlay" class="primary play-all" hidden></button></div>
+      </header>
+      <div id="vBody" class="view-body"></div>
+    </section>
+  </main>
+  <div id="mini" class="mini" role="button">
+    <span id="miniArt" class="mini-art"></span>
+    <span class="mini-txt"><b id="miniTitle"></b><small id="miniSub"></small></span>
+    <button id="miniDevice" class="tool mini-dev"><span id="miniDevIcon"></span><span id="miniDevName"></span></button>
+    <button id="miniPlay" class="icon-btn"></button>
+    <button id="miniNext" class="icon-btn"></button>
+  </div>
+  <!-- Player: Mini und Kompakt direkt, in Voll als „Läuft gerade“ -->
+  <section id="player" class="player">
+    <button id="npClose" class="np-close icon-btn"></button>
+    <div id="art" class="art"></div>
+    <div class="info">
+      <div class="meta">
+        <div class="meta-txt"><div id="title" class="title"></div><div id="sub" class="sub"></div></div>
+        <button id="bLike" class="icon-btn like" hidden></button>
+      </div>
+      <div class="progress">
+        <input id="seek" type="range" min="0" max="1000" value="0">
+        <div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+      </div>
+      <div class="controls">
+        <button id="bPrev" class="icon-btn"></button>
+        <button id="bPlay" class="icon-btn big"></button>
+        <button id="bNext" class="icon-btn"></button>
+      </div>
+      <div class="volume"><button id="volIcon" class="vol-icon"></button><input id="volume" type="range" min="0" max="100" value="50"></div>
+      <div class="tools">
+        <button id="bDevice" class="tool"><span id="devIcon"></span><span id="deviceName"></span></button>
+        <button id="bQueue" class="icon-btn np-only"></button>
+        <button id="bLyrics" class="icon-btn np-only"></button>
+      </div>
+    </div>
+  </section>
+  <!-- Geräteauswahl: Tipp = steuern, Pfeil = Wiedergabe dorthin übergeben -->
+  <div id="devices" class="sheet" hidden>
+    <div class="sheet-head"><b id="devTitle"></b><button id="devClose" class="icon-btn"></button></div>
+    <div id="devList" class="dev-list"></div>
+  </div>
+  <div id="notice" class="notice" hidden></div>
+</div>
+<script type="text/plain" id="ytmHostCode">/*HOST*/</script>
+<script>window.YTM_CONFIG = /*CONFIG*/null;</script>
+<script>/*VIEWS*/</script>
+<script>/*CORE*/</script>
+</body>
+</html>

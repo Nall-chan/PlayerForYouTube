@@ -1,0 +1,118 @@
+{
+    "elements": [
+        {
+            "type": "ExpansionPanel",
+            "caption": "Google Cloud project",
+            "expanded": true,
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": "OAuth client of type \"TVs and Limited Input devices\" with the YouTube Data API v3 enabled."
+                },
+                {
+                    "type": "ValidationTextBox",
+                    "name": "ClientId",
+                    "caption": "Client ID",
+                    "width": "600px"
+                },
+                {
+                    "type": "PasswordTextBox",
+                    "name": "ClientSecret",
+                    "caption": "Client secret",
+                    "width": "600px"
+                }
+            ]
+        }
+    ],
+    "actions": [
+        {
+            "type": "Label",
+            "name": "LoginInfo",
+            "caption": ""
+        },
+        {
+            "type": "Button",
+            "name": "Login",
+            "caption": "Sign in with Google",
+            "onClick": "echo YTM_StartLogin($id);"
+        },
+        {
+            "type": "PopupAlert",
+            "name": "LoginPopup",
+            "visible": false,
+            "popup": {
+                "caption": "Sign in with Google",
+                "closeCaption": "Close",
+                "items": [
+                    {
+                        "type": "Label",
+                        "caption": "Sign in with your Google account on the opened page and enter this code:"
+                    },
+                    {
+                        "type": "ValidationTextBox",
+                        "name": "UserCode",
+                        "caption": "Code",
+                        "value": ""
+                    },
+                    {
+                        "type": "Label",
+                        "caption": "The sign-in completes automatically and this form reloads."
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Button",
+            "name": "Logout",
+            "caption": "Sign out",
+            "confirm": "Sign out from Google and delete the stored sign-in?",
+            "onClick": "YTM_Logout($id);"
+        },
+        {
+            "type": "ExpansionPanel",
+            "name": "Requests",
+            "caption": "Requests today",
+            "items": [
+                {
+                    "type": "Label",
+                    "caption": ""
+                },
+                {
+                    "type": "List",
+                    "rowCount": 5,
+                    "add": false,
+                    "delete": false,
+                    "columns": [
+                        {
+                            "caption": "Category",
+                            "name": "Category",
+                            "width": "auto"
+                        },
+                        {
+                            "caption": "Requests",
+                            "name": "Requests",
+                            "width": "110px"
+                        },
+                        {
+                            "caption": "Errors",
+                            "name": "Errors",
+                            "width": "90px"
+                        }
+                    ],
+                    "values": []
+                },
+                {
+                    "type": "Label",
+                    "caption": "Only the YouTube Data API counts against the daily quota of the Google Cloud project. InnerTube is unofficial and has no published limit. The players count their Lounge requests themselves."
+                }
+            ]
+        }
+    ],
+    "status": [
+        {
+            "code": 201,
+            "icon": "error",
+            "caption": "Sign-in expired. Please sign in again."
+        }
+    ]
+}

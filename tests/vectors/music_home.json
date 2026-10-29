@@ -1,0 +1,917 @@
+{
+    "contents": {
+        "singleColumnBrowseResultsRenderer": {
+            "tabs": [
+                {
+                    "tabRenderer": {
+                        "endpoint": {
+                            "browseEndpoint": {
+                                "browseId": "FEmusic_home"
+                            }
+                        },
+                        "title": "Startseite",
+                        "selected": true,
+                        "content": {
+                            "sectionListRenderer": {
+                                "contents": [
+                                    {
+                                        "musicCarouselShelfRenderer": {
+                                            "header": {
+                                                "musicCarouselShelfBasicHeaderRenderer": {
+                                                    "title": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "Push dich aus dem Bett"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "strapline": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "GUTE-LAUNE-HITS FÜR SOFORTIGE ENERGIE AM MORGEN."
+                                                            }
+                                                        ]
+                                                    },
+                                                    "headerStyle": "MUSIC_CAROUSEL_SHELF_BASIC_HEADER_STYLE_DEFAULT"
+                                                }
+                                            },
+                                            "contents": [
+                                                {
+                                                    "musicTwoRowItemRenderer": {
+                                                        "thumbnailRenderer": {
+                                                            "musicThumbnailRenderer": {
+                                                                "thumbnail": {
+                                                                    "thumbnails": [
+                                                                        {
+                                                                            "url": "https://yt3.googleusercontent.com/CTtOLB0zp54cCxc6hgTqSAZhMGruxyX0X2hUtRXk_z7XfXGYDwM_tgwTXNvog_knvQ7qvXqLy5_EKMQ=w544-h544-l90-rj",
+                                                                            "width": 544,
+                                                                            "height": 544
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                                                                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+                                                            }
+                                                        },
+                                                        "aspectRatio": "MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_SQUARE",
+                                                        "title": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Gute Laune mit Pop und Rock",
+                                                                    "navigationEndpoint": {
+                                                                        "browseEndpoint": {
+                                                                            "browseId": "VLRDCLAK5uy_m0wlRoNn5iCTTgBedfoOQ19Jq9P3XTLIA",
+                                                                            "params": "ggMEgAKPAw%3D%3D",
+                                                                            "browseEndpointContextSupportedConfigs": {
+                                                                                "browseEndpointContextMusicConfig": {
+                                                                                    "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "subtitle": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Ed Sheeran"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Imagine Dragons"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "George Ezra"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "OneRepublic"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "navigationEndpoint": {
+                                                            "browseEndpoint": {
+                                                                "browseId": "VLRDCLAK5uy_m0wlRoNn5iCTTgBedfoOQ19Jq9P3XTLIA",
+                                                                "params": "ggMEgAKPAw%3D%3D",
+                                                                "browseEndpointContextSupportedConfigs": {
+                                                                    "browseEndpointContextMusicConfig": {
+                                                                        "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "thumbnailOverlay": {
+                                                            "musicItemThumbnailOverlayRenderer": {
+                                                                "content": {
+                                                                    "musicPlayButtonRenderer": {
+                                                                        "playNavigationEndpoint": {
+                                                                            "watchPlaylistEndpoint": {
+                                                                                "playlistId": "RDCLAK5uy_m0wlRoNn5iCTTgBedfoOQ19Jq9P3XTLIA",
+                                                                                "params": "wAEB"
+                                                                            }
+                                                                        },
+                                                                        "playIcon": {
+                                                                            "iconType": "PLAY_ARROW"
+                                                                        },
+                                                                        "pauseIcon": {
+                                                                            "iconType": "PAUSE"
+                                                                        },
+                                                                        "iconColor": 4294967295,
+                                                                        "backgroundColor": 2566914048,
+                                                                        "activeBackgroundColor": 4278190080,
+                                                                        "loadingIndicatorColor": 14745645,
+                                                                        "playingIcon": {
+                                                                            "iconType": "VOLUME_UP"
+                                                                        },
+                                                                        "iconLoadingColor": 1308622847,
+                                                                        "activeScaleFactor": 1.2,
+                                                                        "buttonSize": "MUSIC_PLAY_BUTTON_SIZE_MEDIUM",
+                                                                        "rippleTarget": "MUSIC_PLAY_BUTTON_RIPPLE_TARGET_SELF",
+                                                                        "accessibilityPlayData": [],
+                                                                        "accessibilityPauseData": []
+                                                                    }
+                                                                },
+                                                                "contentPosition": "MUSIC_ITEM_THUMBNAIL_OVERLAY_CONTENT_POSITION_BOTTOM_RIGHT",
+                                                                "displayStyle": "MUSIC_ITEM_THUMBNAIL_OVERLAY_DISPLAY_STYLE_HOVER"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "musicTwoRowItemRenderer": {
+                                                        "thumbnailRenderer": {
+                                                            "musicThumbnailRenderer": {
+                                                                "thumbnail": {
+                                                                    "thumbnails": [
+                                                                        {
+                                                                            "url": "https://yt3.googleusercontent.com/sLDTrSUVIlBiKB0mxo12IRay4nioJKseE5QoJAHTGpxlaABW-XxTiExmBYR-ue0ieGnvLR3c7USumw=w544-h544-l90-rj",
+                                                                            "width": 544,
+                                                                            "height": 544
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                                                                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+                                                            }
+                                                        },
+                                                        "aspectRatio": "MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_SQUARE",
+                                                        "title": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Schlagerklassiker",
+                                                                    "navigationEndpoint": {
+                                                                        "browseEndpoint": {
+                                                                            "browseId": "VLRDCLAK5uy_mgp55cLDaUpOfO6foH8FeCecHjwcf7WQk",
+                                                                            "params": "ggMEgAKPAw%3D%3D",
+                                                                            "browseEndpointContextSupportedConfigs": {
+                                                                                "browseEndpointContextMusicConfig": {
+                                                                                    "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "subtitle": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Helene Fischer"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Andrea Berg"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Michelle"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Peter Maffay"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "navigationEndpoint": {
+                                                            "browseEndpoint": {
+                                                                "browseId": "VLRDCLAK5uy_mgp55cLDaUpOfO6foH8FeCecHjwcf7WQk",
+                                                                "params": "ggMEgAKPAw%3D%3D",
+                                                                "browseEndpointContextSupportedConfigs": {
+                                                                    "browseEndpointContextMusicConfig": {
+                                                                        "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "thumbnailOverlay": {
+                                                            "musicItemThumbnailOverlayRenderer": {
+                                                                "content": {
+                                                                    "musicPlayButtonRenderer": {
+                                                                        "playNavigationEndpoint": {
+                                                                            "watchPlaylistEndpoint": {
+                                                                                "playlistId": "RDCLAK5uy_mgp55cLDaUpOfO6foH8FeCecHjwcf7WQk",
+                                                                                "params": "wAEB"
+                                                                            }
+                                                                        },
+                                                                        "playIcon": {
+                                                                            "iconType": "PLAY_ARROW"
+                                                                        },
+                                                                        "pauseIcon": {
+                                                                            "iconType": "PAUSE"
+                                                                        },
+                                                                        "iconColor": 4294967295,
+                                                                        "backgroundColor": 2566914048,
+                                                                        "activeBackgroundColor": 4278190080,
+                                                                        "loadingIndicatorColor": 14745645,
+                                                                        "playingIcon": {
+                                                                            "iconType": "VOLUME_UP"
+                                                                        },
+                                                                        "iconLoadingColor": 1308622847,
+                                                                        "activeScaleFactor": 1.2,
+                                                                        "buttonSize": "MUSIC_PLAY_BUTTON_SIZE_MEDIUM",
+                                                                        "rippleTarget": "MUSIC_PLAY_BUTTON_RIPPLE_TARGET_SELF",
+                                                                        "accessibilityPlayData": [],
+                                                                        "accessibilityPauseData": []
+                                                                    }
+                                                                },
+                                                                "contentPosition": "MUSIC_ITEM_THUMBNAIL_OVERLAY_CONTENT_POSITION_BOTTOM_RIGHT",
+                                                                "displayStyle": "MUSIC_ITEM_THUMBNAIL_OVERLAY_DISPLAY_STYLE_HOVER"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "musicTwoRowItemRenderer": {
+                                                        "thumbnailRenderer": {
+                                                            "musicThumbnailRenderer": {
+                                                                "thumbnail": {
+                                                                    "thumbnails": [
+                                                                        {
+                                                                            "url": "https://yt3.googleusercontent.com/E2aCwodafktnEC0d2BBuiei659e_GY9jZbrXG8VVE_GrmSqkkXXlBJpmQ5mUCuhzpuhdiKRlxPu4Mclk=w544-h544-l90-rj",
+                                                                            "width": 544,
+                                                                            "height": 544
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                                                                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+                                                            }
+                                                        },
+                                                        "aspectRatio": "MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_SQUARE",
+                                                        "title": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Die besten Hits der 80er",
+                                                                    "navigationEndpoint": {
+                                                                        "browseEndpoint": {
+                                                                            "browseId": "VLRDCLAK5uy_kmPuJ7R7b9mIaF6otQaKbtFl2x94n9FDw",
+                                                                            "params": "ggMEgAKPAw%3D%3D",
+                                                                            "browseEndpointContextSupportedConfigs": {
+                                                                                "browseEndpointContextMusicConfig": {
+                                                                                    "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "subtitle": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "The Proclaimers"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Culture Club"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "a-ha"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "The Communards"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "navigationEndpoint": {
+                                                            "browseEndpoint": {
+                                                                "browseId": "VLRDCLAK5uy_kmPuJ7R7b9mIaF6otQaKbtFl2x94n9FDw",
+                                                                "params": "ggMEgAKPAw%3D%3D",
+                                                                "browseEndpointContextSupportedConfigs": {
+                                                                    "browseEndpointContextMusicConfig": {
+                                                                        "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "thumbnailOverlay": {
+                                                            "musicItemThumbnailOverlayRenderer": {
+                                                                "content": {
+                                                                    "musicPlayButtonRenderer": {
+                                                                        "playNavigationEndpoint": {
+                                                                            "watchPlaylistEndpoint": {
+                                                                                "playlistId": "RDCLAK5uy_kmPuJ7R7b9mIaF6otQaKbtFl2x94n9FDw",
+                                                                                "params": "wAEB"
+                                                                            }
+                                                                        },
+                                                                        "playIcon": {
+                                                                            "iconType": "PLAY_ARROW"
+                                                                        },
+                                                                        "pauseIcon": {
+                                                                            "iconType": "PAUSE"
+                                                                        },
+                                                                        "iconColor": 4294967295,
+                                                                        "backgroundColor": 2566914048,
+                                                                        "activeBackgroundColor": 4278190080,
+                                                                        "loadingIndicatorColor": 14745645,
+                                                                        "playingIcon": {
+                                                                            "iconType": "VOLUME_UP"
+                                                                        },
+                                                                        "iconLoadingColor": 1308622847,
+                                                                        "activeScaleFactor": 1.2,
+                                                                        "buttonSize": "MUSIC_PLAY_BUTTON_SIZE_MEDIUM",
+                                                                        "rippleTarget": "MUSIC_PLAY_BUTTON_RIPPLE_TARGET_SELF",
+                                                                        "accessibilityPlayData": [],
+                                                                        "accessibilityPauseData": []
+                                                                    }
+                                                                },
+                                                                "contentPosition": "MUSIC_ITEM_THUMBNAIL_OVERLAY_CONTENT_POSITION_BOTTOM_RIGHT",
+                                                                "displayStyle": "MUSIC_ITEM_THUMBNAIL_OVERLAY_DISPLAY_STYLE_HOVER"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "itemSize": "COLLECTION_STYLE_ITEM_SIZE_MEDIUM",
+                                            "shelfId": "401955aa-a3ea-4560-aeeb-e1a94a2d998f"
+                                        }
+                                    },
+                                    {
+                                        "musicCarouselShelfRenderer": {
+                                            "header": {
+                                                "musicCarouselShelfBasicHeaderRenderer": {
+                                                    "title": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "Herbst 🍁"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "strapline": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "DIE BLÄTTER FALLEN"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "headerStyle": "MUSIC_CAROUSEL_SHELF_BASIC_HEADER_STYLE_DEFAULT"
+                                                }
+                                            },
+                                            "contents": [
+                                                {
+                                                    "musicTwoRowItemRenderer": {
+                                                        "thumbnailRenderer": {
+                                                            "musicThumbnailRenderer": {
+                                                                "thumbnail": {
+                                                                    "thumbnails": [
+                                                                        {
+                                                                            "url": "https://yt3.googleusercontent.com/mT0N-shvRc8JLk6RWjBBLPLTUMeJFi5Ff8lTi67sTkGWdMHPkvkB9ED-A_eejVl5s7mw6BNSs3T99Q=w544-h544-l90-rj",
+                                                                            "width": 544,
+                                                                            "height": 544
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                                                                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+                                                            }
+                                                        },
+                                                        "aspectRatio": "MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_SQUARE",
+                                                        "title": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Herbst HIts",
+                                                                    "navigationEndpoint": {
+                                                                        "browseEndpoint": {
+                                                                            "browseId": "VLRDCLAK5uy_k8d0XHQgAWWSZe7l7tUp0xLmEV_ncPxck",
+                                                                            "params": "ggMEgALjBA%3D%3D",
+                                                                            "browseEndpointContextSupportedConfigs": {
+                                                                                "browseEndpointContextMusicConfig": {
+                                                                                    "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "subtitle": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Olivia Rodrigo"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Taylor Swift"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Teddy Swims"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "AYLIVA"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "navigationEndpoint": {
+                                                            "browseEndpoint": {
+                                                                "browseId": "VLRDCLAK5uy_k8d0XHQgAWWSZe7l7tUp0xLmEV_ncPxck",
+                                                                "params": "ggMEgALjBA%3D%3D",
+                                                                "browseEndpointContextSupportedConfigs": {
+                                                                    "browseEndpointContextMusicConfig": {
+                                                                        "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "thumbnailOverlay": {
+                                                            "musicItemThumbnailOverlayRenderer": {
+                                                                "content": {
+                                                                    "musicPlayButtonRenderer": {
+                                                                        "playNavigationEndpoint": {
+                                                                            "watchPlaylistEndpoint": {
+                                                                                "playlistId": "RDCLAK5uy_k8d0XHQgAWWSZe7l7tUp0xLmEV_ncPxck",
+                                                                                "params": "wAEB"
+                                                                            }
+                                                                        },
+                                                                        "playIcon": {
+                                                                            "iconType": "PLAY_ARROW"
+                                                                        },
+                                                                        "pauseIcon": {
+                                                                            "iconType": "PAUSE"
+                                                                        },
+                                                                        "iconColor": 4294967295,
+                                                                        "backgroundColor": 2566914048,
+                                                                        "activeBackgroundColor": 4278190080,
+                                                                        "loadingIndicatorColor": 14745645,
+                                                                        "playingIcon": {
+                                                                            "iconType": "VOLUME_UP"
+                                                                        },
+                                                                        "iconLoadingColor": 1308622847,
+                                                                        "activeScaleFactor": 1.2,
+                                                                        "buttonSize": "MUSIC_PLAY_BUTTON_SIZE_MEDIUM",
+                                                                        "rippleTarget": "MUSIC_PLAY_BUTTON_RIPPLE_TARGET_SELF",
+                                                                        "accessibilityPlayData": [],
+                                                                        "accessibilityPauseData": []
+                                                                    }
+                                                                },
+                                                                "contentPosition": "MUSIC_ITEM_THUMBNAIL_OVERLAY_CONTENT_POSITION_BOTTOM_RIGHT",
+                                                                "displayStyle": "MUSIC_ITEM_THUMBNAIL_OVERLAY_DISPLAY_STYLE_HOVER"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "musicTwoRowItemRenderer": {
+                                                        "thumbnailRenderer": {
+                                                            "musicThumbnailRenderer": {
+                                                                "thumbnail": {
+                                                                    "thumbnails": [
+                                                                        {
+                                                                            "url": "https://yt3.googleusercontent.com/qiSiTq0SHGRlWfGS2HbQXrj9Xm86sGvlOtjDNM8NOj68ZzQszRCYxodLBWbo3tE0BUA048b1kj4w2Q=w544-h544-l90-rj",
+                                                                            "width": 544,
+                                                                            "height": 544
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                                                                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+                                                            }
+                                                        },
+                                                        "aspectRatio": "MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_SQUARE",
+                                                        "title": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "Herbst Melodien",
+                                                                    "navigationEndpoint": {
+                                                                        "browseEndpoint": {
+                                                                            "browseId": "VLRDCLAK5uy_n_goavyhecaj4JOjSN-fWLxKmgZli6kj4",
+                                                                            "params": "ggMEgALjBA%3D%3D",
+                                                                            "browseEndpointContextSupportedConfigs": {
+                                                                                "browseEndpointContextMusicConfig": {
+                                                                                    "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "subtitle": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "AYLIVA"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Paula Hartmann"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Billie Eilish"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Lady Gaga"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "navigationEndpoint": {
+                                                            "browseEndpoint": {
+                                                                "browseId": "VLRDCLAK5uy_n_goavyhecaj4JOjSN-fWLxKmgZli6kj4",
+                                                                "params": "ggMEgALjBA%3D%3D",
+                                                                "browseEndpointContextSupportedConfigs": {
+                                                                    "browseEndpointContextMusicConfig": {
+                                                                        "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "thumbnailOverlay": {
+                                                            "musicItemThumbnailOverlayRenderer": {
+                                                                "content": {
+                                                                    "musicPlayButtonRenderer": {
+                                                                        "playNavigationEndpoint": {
+                                                                            "watchPlaylistEndpoint": {
+                                                                                "playlistId": "RDCLAK5uy_n_goavyhecaj4JOjSN-fWLxKmgZli6kj4",
+                                                                                "params": "wAEB"
+                                                                            }
+                                                                        },
+                                                                        "playIcon": {
+                                                                            "iconType": "PLAY_ARROW"
+                                                                        },
+                                                                        "pauseIcon": {
+                                                                            "iconType": "PAUSE"
+                                                                        },
+                                                                        "iconColor": 4294967295,
+                                                                        "backgroundColor": 2566914048,
+                                                                        "activeBackgroundColor": 4278190080,
+                                                                        "loadingIndicatorColor": 14745645,
+                                                                        "playingIcon": {
+                                                                            "iconType": "VOLUME_UP"
+                                                                        },
+                                                                        "iconLoadingColor": 1308622847,
+                                                                        "activeScaleFactor": 1.2,
+                                                                        "buttonSize": "MUSIC_PLAY_BUTTON_SIZE_MEDIUM",
+                                                                        "rippleTarget": "MUSIC_PLAY_BUTTON_RIPPLE_TARGET_SELF",
+                                                                        "accessibilityPlayData": [],
+                                                                        "accessibilityPauseData": []
+                                                                    }
+                                                                },
+                                                                "contentPosition": "MUSIC_ITEM_THUMBNAIL_OVERLAY_CONTENT_POSITION_BOTTOM_RIGHT",
+                                                                "displayStyle": "MUSIC_ITEM_THUMBNAIL_OVERLAY_DISPLAY_STYLE_HOVER"
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "musicTwoRowItemRenderer": {
+                                                        "thumbnailRenderer": {
+                                                            "musicThumbnailRenderer": {
+                                                                "thumbnail": {
+                                                                    "thumbnails": [
+                                                                        {
+                                                                            "url": "https://yt3.googleusercontent.com/HoJO8oJOEr3rHyOKyhoQRi98lMFPpAOGb3vLlR6AF4_jA5DB5f6vAx1UFzBKYTf4zIPhpgjTsiaY5g=w544-h544-l90-rj",
+                                                                            "width": 544,
+                                                                            "height": 544
+                                                                        }
+                                                                    ]
+                                                                },
+                                                                "thumbnailCrop": "MUSIC_THUMBNAIL_CROP_UNSPECIFIED",
+                                                                "thumbnailScale": "MUSIC_THUMBNAIL_SCALE_ASPECT_FILL"
+                                                            }
+                                                        },
+                                                        "aspectRatio": "MUSIC_TWO_ROW_ITEM_THUMBNAIL_ASPECT_RATIO_SQUARE",
+                                                        "title": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "80er-Rock zum Entspannen",
+                                                                    "navigationEndpoint": {
+                                                                        "browseEndpoint": {
+                                                                            "browseId": "VLRDCLAK5uy_kvzSF-chVVpH1r55Frc3fuHXCyRc01sYg",
+                                                                            "params": "ggMEgALjBA%3D%3D",
+                                                                            "browseEndpointContextSupportedConfigs": {
+                                                                                "browseEndpointContextMusicConfig": {
+                                                                                    "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        },
+                                                        "subtitle": {
+                                                            "runs": [
+                                                                {
+                                                                    "text": "TOTO"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "UB40"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "The Police"
+                                                                },
+                                                                {
+                                                                    "text": ", "
+                                                                },
+                                                                {
+                                                                    "text": "Fleetwood Mac"
+                                                                }
+                                                            ]
+                                                        },
+                                                        "navigationEndpoint": {
+                                                            "browseEndpoint": {
+                                                                "browseId": "VLRDCLAK5uy_kvzSF-chVVpH1r55Frc3fuHXCyRc01sYg",
+                                                                "params": "ggMEgALjBA%3D%3D",
+                                                                "browseEndpointContextSupportedConfigs": {
+                                                                    "browseEndpointContextMusicConfig": {
+                                                                        "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                    }
+                                                                }
+                                                            }
+                                                        },
+                                                        "thumbnailOverlay": {
+                                                            "musicItemThumbnailOverlayRenderer": {
+                                                                "content": {
+                                                                    "musicPlayButtonRenderer": {
+                                                                        "playNavigationEndpoint": {
+                                                                            "watchPlaylistEndpoint": {
+                                                                                "playlistId": "RDCLAK5uy_kvzSF-chVVpH1r55Frc3fuHXCyRc01sYg",
+                                                                                "params": "wAEB"
+                                                                            }
+                                                                        },
+                                                                        "playIcon": {
+                                                                            "iconType": "PLAY_ARROW"
+                                                                        },
+                                                                        "pauseIcon": {
+                                                                            "iconType": "PAUSE"
+                                                                        },
+                                                                        "iconColor": 4294967295,
+                                                                        "backgroundColor": 2566914048,
+                                                                        "activeBackgroundColor": 4278190080,
+                                                                        "loadingIndicatorColor": 14745645,
+                                                                        "playingIcon": {
+                                                                            "iconType": "VOLUME_UP"
+                                                                        },
+                                                                        "iconLoadingColor": 1308622847,
+                                                                        "activeScaleFactor": 1.2,
+                                                                        "buttonSize": "MUSIC_PLAY_BUTTON_SIZE_MEDIUM",
+                                                                        "rippleTarget": "MUSIC_PLAY_BUTTON_RIPPLE_TARGET_SELF",
+                                                                        "accessibilityPlayData": [],
+                                                                        "accessibilityPauseData": []
+                                                                    }
+                                                                },
+                                                                "contentPosition": "MUSIC_ITEM_THUMBNAIL_OVERLAY_CONTENT_POSITION_BOTTOM_RIGHT",
+                                                                "displayStyle": "MUSIC_ITEM_THUMBNAIL_OVERLAY_DISPLAY_STYLE_HOVER"
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ],
+                                            "itemSize": "COLLECTION_STYLE_ITEM_SIZE_MEDIUM",
+                                            "shelfId": "2460081d-169c-4398-8717-58ad61006230"
+                                        }
+                                    },
+                                    {
+                                        "musicTastebuilderShelfRenderer": {
+                                            "thumbnail": {
+                                                "musicTastebuilderShelfThumbnailRenderer": {
+                                                    "thumbnail": {
+                                                        "thumbnails": [
+                                                            {
+                                                                "url": "https://www.youtube.com/img/music/tastebuilder/shelf_thumbnail/v6/DE_992_X_304.png",
+                                                                "width": 992,
+                                                                "height": 304
+                                                            }
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "primaryText": {
+                                                "runs": [
+                                                    {
+                                                        "text": "Welche Musik magst du?"
+                                                    }
+                                                ]
+                                            },
+                                            "secondaryText": {
+                                                "runs": [
+                                                    {
+                                                        "text": "Wir erstellen einen Musikmix, der voll auf dich zugeschnitten ist"
+                                                    }
+                                                ]
+                                            },
+                                            "actionButton": {
+                                                "buttonRenderer": {
+                                                    "style": "STYLE_PRIMARY",
+                                                    "text": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "Los gehts"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "navigationEndpoint": {
+                                                        "modalEndpoint": {
+                                                            "modal": {
+                                                                "modalWithTitleAndButtonRenderer": {
+                                                                    "title": {
+                                                                        "runs": [
+                                                                            {
+                                                                                "text": "Hast du einen Favoriten?"
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "content": {
+                                                                        "runs": [
+                                                                            {
+                                                                                "text": "Sag uns, welche Künstler dir gefallen, damit wir die Empfehlungen für dich optimieren können"
+                                                                            }
+                                                                        ]
+                                                                    },
+                                                                    "button": {
+                                                                        "buttonRenderer": {
+                                                                            "style": "STYLE_BLUE_TEXT",
+                                                                            "isDisabled": false,
+                                                                            "text": {
+                                                                                "runs": [
+                                                                                    {
+                                                                                        "text": "Anmelden"
+                                                                                    }
+                                                                                ]
+                                                                            },
+                                                                            "navigationEndpoint": {
+                                                                                "signInEndpoint": {
+                                                                                    "hack": true
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "isVisible": true
+                                        }
+                                    }
+                                ],
+                                "continuations": [
+                                    {
+                                        "nextContinuationData": {
+                                            "continuation": "4qmFsgKhAhIMRkVtdXNpY19ob21lGpACQ0FONnh3RkhURE5IZWs5VWNUTndZMFJYYjBWQ1EyNDRTMHBJYkRCWU0wSm9XakpXWm1NeU5XaGpTRTV2WWpOU1ptSllWbnBoVjA1bVkwZEdibHBXT1hsYVYyUndZakkxYUdKQ1NXWmtla1pNVG14Rk1XTXdOVWhZTWs1cFpEQjBSR1ZyUm5SUk1VSjZZMjFXTmsxclZrZGtSV1JEWW5odk1sUllWbnBoVjA1RllWaE9hbUl6V214amJteFJXVmRrYkZVeVZubGtiV3hxV2xNeFNGcFlVa2xpTWpGc1ZVZEdibHBSUVVKQlIxSnNRVUZHUlZKUlFVSlNSVlZCUVZGRlJDMXdla2gyVVd0RFEwRlI%3D"
+                                        }
+                                    }
+                                ],
+                                "header": {
+                                    "chipCloudRenderer": {
+                                        "chips": [
+                                            {
+                                                "chipCloudChipRenderer": {
+                                                    "style": {
+                                                        "styleType": "STYLE_LARGE_TRANSLUCENT_AND_SELECTED_WHITE"
+                                                    },
+                                                    "text": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "Podcasts"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "navigationEndpoint": {
+                                                        "browseEndpoint": {
+                                                            "browseId": "FEmusic_home",
+                                                            "params": "ggNCSgQIDBADSgQICRABSgQICBABSgQIBxABSgQIAxABSgQIBBABSgQIDhABSgQIBhABSgQIChABSgQIDRABSgQIBRAB"
+                                                        }
+                                                    },
+                                                    "isSelected": false,
+                                                    "onDeselectedCommand": {
+                                                        "browseEndpoint": {
+                                                            "browseId": "FEmusic_home",
+                                                            "params": "ggNCSgQIDBABSgQICRABSgQICBABSgQIBxABSgQIAxABSgQIBBABSgQIDhABSgQIBhABSgQIChABSgQIDRABSgQIBRAB"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "chipCloudChipRenderer": {
+                                                    "style": {
+                                                        "styleType": "STYLE_LARGE_TRANSLUCENT_AND_SELECTED_WHITE"
+                                                    },
+                                                    "text": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "Power"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "navigationEndpoint": {
+                                                        "browseEndpoint": {
+                                                            "browseId": "FEmusic_home",
+                                                            "params": "ggNCSgQIDBABSgQICRADSgQICBABSgQIBxABSgQIAxABSgQIBBABSgQIDhABSgQIBhABSgQIChABSgQIDRABSgQIBRAB"
+                                                        }
+                                                    },
+                                                    "isSelected": false,
+                                                    "onDeselectedCommand": {
+                                                        "browseEndpoint": {
+                                                            "browseId": "FEmusic_home",
+                                                            "params": "ggNCSgQIDBABSgQICRABSgQICBABSgQIBxABSgQIAxABSgQIBBABSgQIDhABSgQIBhABSgQIChABSgQIDRABSgQIBRAB"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            {
+                                                "chipCloudChipRenderer": {
+                                                    "style": {
+                                                        "styleType": "STYLE_LARGE_TRANSLUCENT_AND_SELECTED_WHITE"
+                                                    },
+                                                    "text": {
+                                                        "runs": [
+                                                            {
+                                                                "text": "Gute Laune"
+                                                            }
+                                                        ]
+                                                    },
+                                                    "navigationEndpoint": {
+                                                        "browseEndpoint": {
+                                                            "browseId": "FEmusic_home",
+                                                            "params": "ggNCSgQIDBABSgQICRABSgQICBADSgQIBxABSgQIAxABSgQIBBABSgQIDhABSgQIBhABSgQIChABSgQIDRABSgQIBRAB"
+                                                        }
+                                                    },
+                                                    "isSelected": false,
+                                                    "onDeselectedCommand": {
+                                                        "browseEndpoint": {
+                                                            "browseId": "FEmusic_home",
+                                                            "params": "ggNCSgQIDBABSgQICRABSgQICBABSgQIBxABSgQIAxABSgQIBBABSgQIDhABSgQIBhABSgQIChABSgQIDRABSgQIBRAB"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        ],
+                                        "horizontalScrollable": true
+                                    }
+                                }
+                            }
+                        },
+                        "icon": {
+                            "iconType": "TAB_HOME"
+                        },
+                        "tabIdentifier": "FEmusic_home"
+                    }
+                }
+            ]
+        }
+    },
+    "maxAgeStoreSeconds": 0
+}

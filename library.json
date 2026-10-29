@@ -1,0 +1,12 @@
+{
+    "id": "{E1D01172-8699-4CB8-8C7A-63557C6818F3}",
+    "name": "YouTubeMusic",
+    "author": "Michael Tröger",
+    "url": "https://github.com/Nall-chan/YouTubeMusic",
+    "compatibility": {
+        "version": "8.1"
+    },
+    "version": "0.10",
+    "build": 10,
+    "date": 1793263881
+}

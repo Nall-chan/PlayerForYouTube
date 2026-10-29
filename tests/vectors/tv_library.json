@@ -1,0 +1,301 @@
+{
+    "contents": {
+        "tvBrowseRenderer": {
+            "content": {
+                "tvSecondaryNavRenderer": {
+                    "sections": [
+                        {
+                            "tvSecondaryNavSectionRenderer": {
+                                "tabs": [
+                                    {
+                                        "tabRenderer": {
+                                            "endpoint": {
+                                                "browseEndpoint": {
+                                                    "browseId": "FEmusic_last_played"
+                                                }
+                                            },
+                                            "title": "Letzte Aktivität",
+                                            "selected": false,
+                                            "content": {
+                                                "tvSurfaceContentRenderer": {
+                                                    "continuation": {
+                                                        "reloadContinuationData": {
+                                                            "continuation": "4qmFsgIVEhNGRW11c2ljX2xhc3RfcGxheWVk"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "icon": {
+                                                "iconType": "SEARCH_HISTORY"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "tabRenderer": {
+                                            "endpoint": {
+                                                "browseEndpoint": {
+                                                    "browseId": "FEmusic_liked_playlists"
+                                                }
+                                            },
+                                            "title": "Playlists",
+                                            "selected": true,
+                                            "content": {
+                                                "tvSurfaceContentRenderer": {
+                                                    "content": {
+                                                        "gridRenderer": {
+                                                            "items": [
+                                                                {
+                                                                    "tileRenderer": {
+                                                                        "style": "TILE_STYLE_YTLR_SQUARE",
+                                                                        "header": {
+                                                                            "tileHeaderRenderer": {
+                                                                                "thumbnail": {
+                                                                                    "thumbnails": [
+                                                                                        {
+                                                                                            "url": "https://www.gstatic.com/youtube/media/ytm/images/pbg/liked-songs-delhi-576.png",
+                                                                                            "width": 576,
+                                                                                            "height": 576
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                "style": "TILE_HEADER_STYLE_RECTANGULAR"
+                                                                            }
+                                                                        },
+                                                                        "metadata": {
+                                                                            "tileMetadataRenderer": {
+                                                                                "title": {
+                                                                                    "runs": [
+                                                                                        {
+                                                                                            "text": "Musik, die ich mag",
+                                                                                            "navigationEndpoint": {
+                                                                                                "browseEndpoint": {
+                                                                                                    "browseId": "VLLM",
+                                                                                                    "browseEndpointContextSupportedConfigs": {
+                                                                                                        "browseEndpointContextMusicConfig": {
+                                                                                                            "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                "lines": [
+                                                                                    {
+                                                                                        "lineRenderer": {
+                                                                                            "items": [
+                                                                                                {
+                                                                                                    "lineItemRenderer": {
+                                                                                                        "text": {
+                                                                                                            "simpleText": "Autom. Playlist • TestUser • 2.557 Songs"
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "onSelectCommand": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "VLLM",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "contentId": "XYMoaMqyf6s",
+                                                                        "contentType": "TILE_CONTENT_TYPE_PLAYLIST"
+                                                                    }
+                                                                },
+                                                                {
+                                                                    "tileRenderer": {
+                                                                        "style": "TILE_STYLE_YTLR_SQUARE",
+                                                                        "header": {
+                                                                            "tileHeaderRenderer": {
+                                                                                "thumbnail": {
+                                                                                    "thumbnails": [
+                                                                                        {
+                                                                                            "url": "https://yt3.googleusercontent.com/6fmD4KTtmHbe0HiXa1JA_MDx62u9ZnXEluS_MtPnRgvqMuby_f-n3CME7tddYRRxjSaBo2woCAz70OhXSw=w544-h544-l90-rj",
+                                                                                            "width": 544,
+                                                                                            "height": 544
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                "style": "TILE_HEADER_STYLE_RECTANGULAR"
+                                                                            }
+                                                                        },
+                                                                        "metadata": {
+                                                                            "tileMetadataRenderer": {
+                                                                                "title": {
+                                                                                    "runs": [
+                                                                                        {
+                                                                                            "text": "Handy",
+                                                                                            "navigationEndpoint": {
+                                                                                                "browseEndpoint": {
+                                                                                                    "browseId": "VLPLOwPQ8vMo168",
+                                                                                                    "browseEndpointContextSupportedConfigs": {
+                                                                                                        "browseEndpointContextMusicConfig": {
+                                                                                                            "pageType": "MUSIC_PAGE_TYPE_PLAYLIST"
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    ]
+                                                                                },
+                                                                                "lines": [
+                                                                                    {
+                                                                                        "lineRenderer": {
+                                                                                            "items": [
+                                                                                                {
+                                                                                                    "lineItemRenderer": {
+                                                                                                        "text": {
+                                                                                                            "simpleText": "TestUser"
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    },
+                                                                                    {
+                                                                                        "lineRenderer": {
+                                                                                            "items": [
+                                                                                                {
+                                                                                                    "lineItemRenderer": {
+                                                                                                        "text": {
+                                                                                                            "simpleText": "Playlist • 10 Titel"
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            ]
+                                                                                        }
+                                                                                    }
+                                                                                ]
+                                                                            }
+                                                                        },
+                                                                        "onSelectCommand": {
+                                                                            "browseEndpoint": {
+                                                                                "browseId": "VLPLOwPQ8vMo168",
+                                                                                "browseEndpointContextSupportedConfigs": {
+                                                                                    "browseEndpointContextMusicConfig": {
+                                                                                        "pageType": "MUSIC_PAGE_TYPE_UNKNOWN"
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "contentId": "DmlkcUkXDC4",
+                                                                        "contentType": "TILE_CONTENT_TYPE_PLAYLIST"
+                                                                    }
+                                                                }
+                                                            ],
+                                                            "continuations": [
+                                                                {
+                                                                    "nextContinuationData": {
+                                                                        "continuation": "4qmFsgL2BRIXRkVtdXNpY19saWtlZF9wbGF5bGlzdHMa2gVDQ2w2bkFSRFoyZEpRVkpCUTBkblNtdGFVa3RKUVRCT2NGZFZiRUpWYTBaRFVqQkdSazVGUmxaUlZVcFVVVlZhVWxGV1pHNVJiVTVDVW1wU1FsZFZSa05SVm5CQ1VXdEdZVm93U2tKYVYyUkRVVlpzUWxFd1JscGFNRTVDVld0c1RGRXdSa3BYVlVaVVVWVktURm93YkVOUlYyaDJVVEJrUWxKdWJGVmFNamxFVmtWVmQxVXhUa0ppTUdSRVZHdG5lbUZJVmtKU2ExWnVaREJzZEZwR1p6Tk5WMlJhVlZSYVRtUnFRbmxWVld4b1VsZHplRTFYVFhsaVNFcE5VVEJLY2xsV1pGWmFNa1pZVkcwNVNsSjZSbTlYYm14S1ZGVk9TMkpzV1hSUFZteElVbFU1Y1ZSRWJFeE5SVTVNV2pCR05WSkZSbkJYYWtadFpHeGtRMkZGVW5abFZqbFVaRVZHZFZOWGNFUmFNSEJWVmxob1NscEZUbTVSVms1Q1VXMDVVMVZXYUZkaE1rWllUMWh3U2xJd1dYaFpNMnhEVmtkR1NFOVliR3RUUlRGd1VWVk9kbEZWTVc1UmJteFVWVmM1UkZaVVFsWlZNVVl6WWpBeFJGUXpWalpoYXpWcVVqQldUVlZJV25OVVZXeERVbGRrUWxsVlZYZGFSM2hxVFRCS2MxbFdaRTlpTVhCWlUycENZVlV3U2toWmFrbzBZbXh3V0U1SGJFVlJWM0I1WTNwU05sZEZTbTlSTTI4elRsWlNSRkZXVG5aUlZURnVaREJyTWs0d09VNU5XR1JhVlZoTmRFeFdWak5hTUZreVVXdEtRbEZyYkVKU01HeENWVlZrVWxGV1JraFhWVVpTVWpKa1FsVlZhRXhSVmtwUFVrWnZlbHBGY0UxV01XOTRXVlZrYzAweFpGZFNia0pVWVhwc2VsUlVUbXRUYWtwQ1VsVkpNRkZWVmtNJTNE"
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    "continuation": {
+                                                        "reloadContinuationData": {
+                                                            "continuation": "4qmFsgIZEhdGRW11c2ljX2xpa2VkX3BsYXlsaXN0cw%3D%3D"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "icon": {
+                                                "iconType": "PLAYLISTS"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "tabRenderer": {
+                                            "endpoint": {
+                                                "browseEndpoint": {
+                                                    "browseId": "FEmusic_liked_albums"
+                                                }
+                                            },
+                                            "title": "Alben",
+                                            "selected": false,
+                                            "content": {
+                                                "tvSurfaceContentRenderer": {
+                                                    "continuation": {
+                                                        "reloadContinuationData": {
+                                                            "continuation": "4qmFsgIWEhRGRW11c2ljX2xpa2VkX2FsYnVtcw%3D%3D"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "icon": {
+                                                "iconType": "ALBUM"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "tabRenderer": {
+                                            "endpoint": {
+                                                "browseEndpoint": {
+                                                    "browseId": "FEmusic_liked_videos"
+                                                }
+                                            },
+                                            "title": "Titel, die ich mag",
+                                            "selected": false,
+                                            "content": {
+                                                "tvSurfaceContentRenderer": {
+                                                    "continuation": {
+                                                        "reloadContinuationData": {
+                                                            "continuation": "4qmFsgIWEhRGRW11c2ljX2xpa2VkX3ZpZGVvcw%3D%3D"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "icon": {
+                                                "iconType": "LIKE"
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "tabRenderer": {
+                                            "endpoint": {
+                                                "browseEndpoint": {
+                                                    "browseId": "FEmusic_library_corpus_artists"
+                                                }
+                                            },
+                                            "title": "Abos",
+                                            "selected": false,
+                                            "content": {
+                                                "tvSurfaceContentRenderer": {
+                                                    "continuation": {
+                                                        "reloadContinuationData": {
+                                                            "continuation": "4qmFsgIgEh5GRW11c2ljX2xpYnJhcnlfY29ycHVzX2FydGlzdHM%3D"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "icon": {
+                                                "iconType": "SUBSCRIPTIONS"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "title": {
+                        "runs": [
+                            {
+                                "text": "Deine Mediathek"
+                            }
+                        ]
+                    },
+                    "style": "TV_SECONDARY_NAV_RENDERER_STYLE_CHIPS"
+                }
+            }
+        }
+    }
+}
