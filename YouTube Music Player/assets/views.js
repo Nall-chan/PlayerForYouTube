@@ -112,9 +112,49 @@ window.YTMViews = function (api) {
   }
 
   // Regale: Titel als Liste (Detailseiten, Suche), sonst als Kartenreihe
-  function renderShelves(body, data, page) {
-    const shelves = (data.shelves || []).filter(s => (s.items || []).length);
-    if (!shelves.length) { status(body, T('Nothing found')); return; }
+  // seen: schon gezeigte Einträge der Seite; Fortsetzungen hängen nur Neues an (der TV-Client wiederholt Einträge)
+  function renderShelves(body, data, page, seen) {
+    seen = seen || new Set();
+    // Stimmungen/Genres teilen sich die browseId und unterscheiden sich nur in params
+    const key = i => i.videoId || (i.browseId ? i.browseId + '|' + (i.params || '') : '') || i.playlistId || i.title;
+    const continued = seen.size > 0;
+    // Reiter (Mediathek mit Anmeldung): Auswahl wie die Filter der Suche, jeder Reiter lädt seinen Inhalt nach
+    if (!continued && (data.tabs || []).length && data.client) {
+      const chips = document.createElement('div');
+      chips.className = 'chips';
+      const results = document.createElement('div');
+      // Gewählter Reiter je Kachel gemerkt (wie der Bereich)
+      const tabKey = api.storageKey + '-tab';
+      let remembered = '';
+      try { remembered = sessionStorage.getItem(tabKey) || ''; } catch (e) { /* kein Speicher */ }
+      let restore = null;
+      data.tabs.forEach(tab => {
+        const c = text('button', tab.title, 'chip' + (tab.selected ? ' sel' : ''));
+        if (remembered === tab.title && !tab.selected) restore = c;
+        c.onclick = () => {
+          try { sessionStorage.setItem(tabKey, tab.title); } catch (e) { /* kein Speicher */ }
+          chips.querySelectorAll('.chip').forEach(x => x.classList.toggle('sel', x === c));
+          results.textContent = '';
+          status(results, T('Loading…'));
+          query({ kind: 'more', token: tab.token, client: data.client }, (next, error) => {
+            if (stack[stack.length - 1] !== page || !c.classList.contains('sel')) return;
+            results.textContent = '';
+            if (next) renderShelves(results, Object.assign({}, next, { tabs: [] }), page); else status(results, error || T('Nothing found'));
+          });
+        };
+        chips.append(c);
+      });
+      body.append(chips, results);
+      if (restore) { restore.click(); return; }
+      body = results;
+    }
+    const shelves = (data.shelves || []).map(s => Object.assign({}, s, { items: (s.items || []).filter(i => {
+      const k = key(i);
+      if (k && seen.has(k)) return false;
+      if (k) seen.add(k);
+      return true;
+    }) })).filter(s => s.items.length);
+    if (!shelves.length) { if (!continued) status(body, T('Nothing found')); return; }
     // Künstlerseite: Radio zum ersten Top-Song (eine eigene Radio-ID des Künstlers liefert der Parser nicht)
     if (page.artist && stack[stack.length - 1] === page) {
       const first = shelves.flatMap(s => s.items).find(i => i.videoId && PLAYABLE.includes(i.type));
@@ -134,8 +174,8 @@ window.YTMViews = function (api) {
       // Stimmungen und Genres haben keine Bilder: als Raster von Schaltflächen
       if (items.every(i => i.type === 'category')) { body.append(categories(items, page)); return; }
       const songs = items.filter(i => i.videoId && PLAYABLE.includes(i.type)).length;
-      // Suche immer als Liste (gemischte Treffer), Detailseiten, wenn überwiegend Titel
-      const asList = page.main === 'search' || (page.detail && songs * 2 >= items.length);
+      // Suche immer als Liste (gemischte Treffer), Detailseiten und Mediathek, wenn überwiegend Titel
+      const asList = page.main === 'search' || ((page.detail || page.main === 'library') && songs * 2 >= items.length);
       const row = asList ? list(items, page) : cards(items, page);
       // Einzelnes Regal ohne Überschrift (z. B. Mediathek): Raster statt einer langen Reihe
       if (!asList && !shelf.title && shelves.length === 1) row.classList.add('grid');
@@ -155,7 +195,7 @@ window.YTMViews = function (api) {
         more.disabled = true;
         query({ kind: 'more', token: data.continuation, client: data.client }, (next, error) => {
           more.remove();
-          if (next) renderShelves(body, next, page); else status(body, error || T('Nothing found'));
+          if (next) renderShelves(body, next, page, seen); else status(body, error || T('Nothing found'));
         }, false);
       };
       body.append(more);
@@ -194,7 +234,9 @@ window.YTMViews = function (api) {
       const t = document.createElement('span');
       t.className = 'row-txt';
       t.append(text('b', item.title), text('small', item.subtitle));
-      r.append(thumb(item), t, text('span', item.duration || '', 'row-dur'));
+      // Titel ohne eigenes Bild (Albumseite): Bild der geöffneten Seite
+      const cover = !item.thumbnail && page && page.cover ? Object.assign({}, item, { thumbnail: page.cover }) : item;
+      r.append(thumb(cover), t, text('span', item.duration || '', 'row-dur'));
       r.onclick = () => activate(item, page);
       box.append(r);
     });
@@ -232,11 +274,15 @@ window.YTMViews = function (api) {
       return;
     }
     if (item.browseId) {
+      // Album-ID (MPREb_…) ist keine Playlist: ohne playlistId gibt es kein „Abspielen“
       const listId = item.type === 'album' || item.type === 'playlist'
-        ? (item.playlistId || item.browseId.replace(/^VL/, '')) : '';
+        ? (item.playlistId || (/^VL/.test(item.browseId) ? item.browseId.slice(2) : '')) : '';
+      // Album mit Playlist als Playlist öffnen: gezeigte Titel = gespielte Titel (die Albumseite zeigt teils andere
+      // Fassungen) und mit Bildern (Titel der Albumseite haben keine)
+      const id = item.type === 'album' && item.playlistId ? 'VL' + item.playlistId : item.browseId;
       open({
         title: item.title, subtitle: item.subtitle, detail: true, playlistId: listId, artist: item.type === 'artist',
-        query: { kind: 'browse', id: item.browseId, params: item.params || '' },
+        cover: item.thumbnail || '', query: { kind: 'browse', id, params: item.params || '' },
       });
       return;
     }
@@ -416,5 +462,11 @@ window.YTMViews = function (api) {
     try { name = sessionStorage.getItem(api.storageKey) || 'home'; } catch (e) { /* kein Speicher */ }
     show(name);
   }
-  return { show, ensure, onResult, trackChanged };
+  // Suche von außen (Klick auf Künstler bzw. Album des laufenden Titels)
+  function searchFor(text, filter) {
+    search = { query: text, filter: filter || '' };
+    show('search');
+  }
+
+  return { show, ensure, onResult, trackChanged, searchFor };
 };

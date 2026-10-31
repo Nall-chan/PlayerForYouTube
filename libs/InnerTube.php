@@ -212,13 +212,13 @@ namespace YouTubeMusic {
          * Regale einer browse- oder search-Antwort.
          *
          * @param  array $Response
-         * @return array{shelves: list<array{title: string, items: list<array>}>, continuation: string}
+         * @return array{shelves: list<array{title: string, items: list<array>}>, continuation: string, tabs: list<array{title: string, token: string, selected: bool}>}
          */
         public static function Shelves(array $Response): array
         {
             $Shelves = [];
             self::CollectShelves($Response, $Shelves);
-            return ['shelves' => $Shelves, 'continuation' => self::ContinuationToken($Response)];
+            return ['shelves' => $Shelves, 'continuation' => self::ContinuationToken($Response), 'tabs' => self::Tabs($Response)];
         }
 
         /**
@@ -423,6 +423,35 @@ namespace YouTubeMusic {
         }
 
         /**
+         * Reiter einer TV-Seite (Mediathek: Letzte Aktivität, Playlists, Alben, Titel, die ich mag, Abos).
+         * Jeder Reiter lädt über sein reloadContinuationData (YTM_BrowseMore); der gewählte ist schon enthalten.
+         *
+         * @param  array $Response
+         * @return list<array{title: string, token: string, selected: bool}>
+         */
+        private static function Tabs(array $Response): array
+        {
+            $Tabs = [];
+            self::Walk($Response, function (string $Key, array $Value) use (&$Tabs): bool
+            {
+                if ($Key !== 'tvSecondaryNavSectionRenderer') {
+                    return true;
+                }
+                foreach ($Value['tabs'] ?? [] as $Tab) {
+                    $Tab = $Tab['tabRenderer'] ?? [];
+                    $Title = $Tab['title'] ?? '';
+                    $Title = is_array($Title) ? self::RunsText($Title) : (string) $Title;
+                    $Token = (string) ($Tab['content']['tvSurfaceContentRenderer']['continuation']['reloadContinuationData']['continuation'] ?? '');
+                    if ($Title !== '' && $Token !== '') {
+                        $Tabs[] = ['title' => self::Clean($Title), 'token' => $Token, 'selected' => (bool) ($Tab['selected'] ?? false)];
+                    }
+                }
+                return false;
+            });
+            return $Tabs;
+        }
+
+        /**
          * Sammelt Regale; Einträge außerhalb eines Regals landen in einem Regal ohne Titel.
          *
          * @param  mixed $Node
@@ -518,13 +547,16 @@ namespace YouTubeMusic {
          */
         private static function ContinuationToken(array $Response): string
         {
+            // „Nächste Seite“ vor „neu laden“: In der TV-Mediathek gehören die reloadContinuationData zu den Reitern (siehe Tabs),
+            // als Fortsetzung genommen hängte der erste Reiter an den gewählten an und wiederholte sich endlos (live geprüft)
             $Token = '';
-            self::Walk($Response, function (string $Key, array $Value) use (&$Token): bool
+            $Reload = '';
+            self::Walk($Response, function (string $Key, array $Value) use (&$Token, &$Reload): bool
             {
                 if ($Token !== '') {
                     return false;
                 }
-                if ($Key === 'nextContinuationData' || $Key === 'reloadContinuationData') {
+                if ($Key === 'nextContinuationData') {
                     $Token = (string) ($Value['continuation'] ?? '');
                     return false;
                 }
@@ -532,9 +564,13 @@ namespace YouTubeMusic {
                     $Token = (string) ($Value['token'] ?? '');
                     return false;
                 }
+                if ($Key === 'reloadContinuationData') {
+                    $Reload = $Reload !== '' ? $Reload : (string) ($Value['continuation'] ?? '');
+                    return false;
+                }
                 return true;
             });
-            return $Token;
+            return $Token !== '' ? $Token : $Reload;
         }
 
         /**

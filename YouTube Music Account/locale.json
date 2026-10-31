@@ -6,7 +6,7 @@
             "Client ID": "Client-ID",
             "Client secret": "Clientschlüssel",
             "Client ID or client secret is missing": "Client-ID oder Clientschlüssel fehlt",
-            "Not signed in to Google": "Nicht bei Google angemeldet",
+            "Not signed in to YouTube": "Nicht bei YouTube angemeldet",
             "Signed in to YouTube as %s": "Bei YouTube angemeldet als %s",
             "Signed in, but the YouTube channel could not be read (see log)": "Angemeldet, aber der YouTube-Kanal konnte nicht gelesen werden (siehe Log)",
             "Sign in with Google": "Mit Google anmelden",
@@ -43,7 +43,8 @@
             "YouTube Music (InnerTube, anonymous)": "YouTube Music (InnerTube, anonym)",
             "YouTube (InnerTube, with sign-in)": "YouTube (InnerTube, mit Anmeldung)",
             "Other": "Sonstige",
-            "Only the YouTube Data API counts against the daily quota of the Google Cloud project. InnerTube is unofficial and has no published limit. The players count their Lounge requests themselves.": "Nur die YouTube Data API zählt gegen das Tageskontingent des Google-Cloud-Projekts. InnerTube ist inoffiziell und hat kein veröffentlichtes Limit. Die Player zählen ihre Lounge-Anfragen selbst."
+            "Only the YouTube Data API counts against the daily quota of the Google Cloud project. InnerTube is unofficial and has no published limit. The players count their Lounge requests themselves.": "Nur die YouTube Data API zählt gegen das Tageskontingent des Google-Cloud-Projekts. InnerTube ist inoffiziell und hat kein veröffentlichtes Limit. Die Player zählen ihre Lounge-Anfragen selbst.",
+            "This module is free for non-commercial use,\r\nDonations in support of the author are accepted here:": "Dieses Modul ist für die nicht kommerzielle Nutzung kostenlos,\r\nSchenkungen als Unterstützung für den Autor werden hier akzeptiert:"
         }
     }
 }

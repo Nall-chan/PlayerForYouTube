@@ -130,6 +130,20 @@ class LoungeTest extends TestCase
         $this->assertSame('', $Session['sid']);
     }
 
+    public function testTerminateUrl(): void
+    {
+        $Session = \YouTubeMusic\Lounge::NewSession('tok', 'Symcon');
+        $Session['sid'] = 'SID1';
+        $Session['gsid'] = 'G1';
+        $Rid = $Session['rid'];
+        parse_str((string) parse_url(\YouTubeMusic\Lounge::Terminate($Session), PHP_URL_QUERY), $Query);
+        $this->assertSame('terminate', $Query['TYPE']);
+        $this->assertSame('SID1', $Query['SID']);
+        $this->assertSame('G1', $Query['gsessionid']);
+        $this->assertSame((string) ($Rid + 1), $Query['RID']);
+        $this->assertSame($Rid + 1, $Session['rid']);
+    }
+
     public function testPollUrl(): void
     {
         $Session = \YouTubeMusic\Lounge::NewSession('tok', 'Symcon', \YouTubeMusic\Lounge::YouTubeBase);

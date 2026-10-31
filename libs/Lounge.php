@@ -194,6 +194,18 @@ namespace YouTubeMusic {
         }
 
         /**
+         * URL zum Abmelden der Fernbedienung vom Gerät (BrowserChannel TYPE=terminate, POST); danach ist die Sitzung ungültig.
+         *
+         * @param  array $Session wird aktualisiert
+         * @return string
+         */
+        public static function Terminate(array &$Session): string
+        {
+            $Session['rid']++;
+            return self::BindUrl($Session, ['SID' => $Session['sid'], 'gsessionid' => $Session['gsid'], 'RID' => (string) $Session['rid'], 'TYPE' => 'terminate']);
+        }
+
+        /**
          * URL und Body für einen Befehl; RID und ofs zählen hoch (sonst verwirft der Server den Befehl als Wiederholung).
          *
          * @param  array $Session wird aktualisiert

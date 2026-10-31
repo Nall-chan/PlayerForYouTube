@@ -20,7 +20,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 [hidden] { display: none !important; }
 * { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 svg { width: 1em; height: 1em; fill: currentColor; display: block; }
-.app { position: relative; box-sizing: border-box; height: 100%; overflow: hidden; container: app / size; }
+.app { position: relative; box-sizing: border-box; height: 100%; container: app / size; }
 /* Größen an die Mediensteuerung der Kachel-Visu angelehnt (Play deutlich größer als Zurück/Weiter) */
 .icon-btn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; font-size: 28px; flex: none; }
 .icon-btn:hover { background: var(--surface); }
@@ -34,7 +34,8 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px;
 input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 50%; background: var(--accent); border: 0; }
 
 /* Hintergrund: Cover weichgezeichnet (Kompakt und „Läuft gerade“) */
-.bg { position: absolute; inset: -40px; background: center / cover no-repeat; filter: blur(40px) saturate(1.4); opacity: 0; transition: opacity .4s; pointer-events: none; }
+/* Füllt auch den Titelbereich der Kachel (body schneidet ab, nicht .app) */
+.bg { position: absolute; inset: calc(-40px - var(--title-space, 0px)) -40px -40px; background: center / cover no-repeat; filter: blur(40px) saturate(1.4); opacity: 0; transition: opacity .4s; pointer-events: none; }
 .has-cover.size-compact .bg, .has-cover.np-open .bg { opacity: .45; }
 
 /* Player */
@@ -45,6 +46,8 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 .meta-txt { flex: 1; min-width: 0; }
 .title { font-weight: 600; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sub { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.size-full .sub-link { cursor: pointer; }
+.size-full .sub-link:hover { text-decoration: underline; color: var(--text); }
 .like.on { color: var(--accent); }
 .like, .tools .icon-btn { width: 36px; height: 36px; font-size: 22px; }
 .times { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin-top: 6px; }
@@ -97,11 +100,14 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 .size-mini.tiny .controls { gap: 16px; }
 
 /* Kompakt: Cover links, Steuerung rechts */
-.size-compact .player { padding: 14px; gap: 18px; }
-/* Maximieren-Pfeil: Like rechts oben und hochkant das Cover nicht in die Ecke legen */
-.size-compact .meta { padding-right: calc(var(--corner) - 8px); }
+/* Große Kacheln: --ui (core.js) vergrößert den Steuerblock per zoom; Cover und Video bleiben ungezoomt */
+.size-compact .info, .np-open .info { zoom: var(--ui, 1); }
+/* Breit: Cover und Steuerung als Gruppe mittig */
+.size-compact .player { padding: 14px; gap: calc(18px * var(--ui, 1)); justify-content: center; }
+/* Maximieren-Pfeil: Like rechts oben und hochkant das Cover nicht in die Ecke legen (innerhalb des Zooms in Bildschirm-px) */
+.size-compact .meta { padding-right: calc((var(--corner) - 8px) / var(--ui, 1)); }
 .size-mini .player { padding-right: var(--corner); }
-.size-compact .info { max-width: 560px; }
+.size-compact .info { flex: 0 1 560px; max-width: 560px; }
 .size-compact .art { height: min(100cqh - 28px, 50cqw); width: auto; }
 /* Kompakt hochkant: Cover oben, Steuerung darunter */
 @container app (max-aspect-ratio: 1/1) {
@@ -201,15 +207,18 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 .size-full:not(.wide) .mini-dev span:last-child { display: none; }
 .size-full .player { display: none; }
 .size-full.np-open .content, .size-full.np-open .mini { visibility: hidden; }
-.size-full.np-open .player { display: grid; position: absolute; inset: 0; grid-template-columns: minmax(0, 1fr) minmax(280px, 420px); align-items: center; gap: 32px; padding: 48px 40px 28px; }
+/* Zwei gleiche Hälften: Cover mittig links, Steuerung (höchstens 420 px, gezoomt) mittig rechts */
+.size-full.np-open .player { display: grid; position: absolute; inset: 0; grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr); align-items: center; gap: calc(32px * var(--ui, 1)); padding: 48px 40px 28px; }
+.size-full.np-open .info { justify-self: center; width: min(420px, 100% / var(--ui, 1)); }
 .size-full.np-open .art { height: auto; width: 100%; max-width: min(100%, calc(100cqh - 120px)); justify-self: center; }
 .size-full.np-open .np-close { display: grid; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); font-size: 24px; }
 .size-full.np-open .title { font-size: 22px; }
 /* Hochformat oder schmal: Cover über der Steuerung (Größe der Kachel, nicht des Fensters) */
 @container app (max-aspect-ratio: 1/1) or (max-width: 760px) {
-  .size-full.np-open .player { grid-template-columns: minmax(0, 520px); grid-template-rows: minmax(0, 1fr) auto; justify-content: center; gap: 18px; padding: 48px 20px 20px; }
-  /* quadratisch: Breite aus der Kachelhöhe abzüglich Steuerung (ca. 330 px) */
-  .size-full.np-open .art { width: min(100%, calc(100cqh - 330px)); height: auto; max-height: none; justify-self: center; align-self: end; }
+  .size-full.np-open .player { grid-template-columns: minmax(0, calc(520px * var(--ui, 1))); grid-template-rows: minmax(0, 1fr) auto; justify-content: center; gap: 18px; padding: 48px 20px 20px; }
+  /* quadratisch: Breite aus der Kachelhöhe abzüglich Steuerung (ca. 330 px, mit Zoom entsprechend mehr) */
+  .size-full.np-open .art { width: min(100%, calc(100cqh - 330px * var(--ui, 1))); height: auto; max-height: none; justify-self: center; align-self: end; }
+  .size-full.np-open .info { width: auto; justify-self: stretch; }
 }
 
 .notice { position: absolute; left: 12px; right: 12px; bottom: 74px; padding: 8px 12px; border-radius: 8px; background: #c0392b; color: #fff; font-size: 13px; z-index: 5; }

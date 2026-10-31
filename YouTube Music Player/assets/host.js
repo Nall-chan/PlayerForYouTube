@@ -272,16 +272,19 @@
           if (ids.length) {
             // Vom Modul aufgelöste Liste (persönliche Listen, Start beim gewählten Titel)
             p.loadPlaylist(ids, Math.max(0, Math.min(ids.length - 1, Number(args.index) || 0)), start);
-          } else if (this.listId) {
-            // Radio eines Titels bildet YouTube selbst; sonst beginnt die Liste beim ersten Eintrag
-            p.loadPlaylist({ list: this.listId, listType: 'playlist', index: 0, startSeconds: start });
           } else if (args.videoId) {
-            p.loadVideoById({ videoId: String(args.videoId), startSeconds: start });
+            // Liste nicht aufgelöst: wenigstens den gewählten Titel (eine ungültige Liste startet sonst das alte Video neu)
+            p.loadPlaylist([String(args.videoId)], 0, start);
+          } else if (this.listId) {
+            // Liste ohne Starttitel: beginnt beim ersten Eintrag
+            p.loadPlaylist({ list: this.listId, listType: 'playlist', index: 0, startSeconds: start });
           }
           break;
         }
         case 'play': p.playVideo(); break;
         case 'pause': p.pauseVideo(); break;
+        // Übergabe an ein anderes Gerät: hier nur anhalten (Titel und Position bleiben)
+        case 'stopVideo': p.pauseVideo(); break;
         case 'next': if (this.atWindowEnd()) this.extend(); else p.nextVideo(); break;
         case 'previous': p.previousVideo(); break;
         case 'seekTo': p.seekTo(Number(args.newTime) || 0, true); break;
@@ -377,7 +380,12 @@
     const body = new URLSearchParams({ secret: this.cfg.secret, type: type, data: data || '', after: String(this.commandAfter) });
     return fetch(this.cfg.hook, { method: 'POST', body: body, credentials: 'same-origin', cache: 'no-store' })
       .then(r => r.ok ? r.json() : null)
-      .then(answer => { if (answer && Array.isArray(answer.commands)) answer.commands.forEach(c => this.command(c)); return answer; })
+      .then(answer => {
+        // Instanz auf Chrome Cast umgestellt (ohne eingehängte Kachel nur über den WebHook zu erfahren)
+        if (answer && answer.release) { window.__ytmHostRelease(this.instance); return null; }
+        if (answer && Array.isArray(answer.commands)) answer.commands.forEach(c => this.command(c));
+        return answer;
+      })
       .catch(() => null);
   };
 
@@ -434,6 +442,14 @@
   window.__ytmHostDispose = function () {
     window.removeEventListener('hashchange', onHashChange);
     Object.keys(runtimes).forEach(id => { runtimes[id].dispose(); delete runtimes[id]; });
+  };
+
+  // Instanz ist kein Kachel-Gerät mehr: Player beenden
+  window.__ytmHostRelease = function (instance) {
+    const r = runtimes[instance];
+    if (!r) return;
+    r.dispose();
+    delete runtimes[instance];
   };
 
   window.__ytmHostGet = function (cfg) {

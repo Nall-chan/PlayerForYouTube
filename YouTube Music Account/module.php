@@ -153,7 +153,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
                         ? ($Name !== ''
                             ? sprintf($this->Translate('Signed in to YouTube as %s'), $Name)
                             : $this->Translate('Signed in, but the YouTube channel could not be read (see log)'))
-                        : $this->Translate('Not signed in to Google');
+                        : $this->Translate('Not signed in to YouTube');
                     break;
                 case 'Login':
                     $Action['visible'] = !$SignedIn;
@@ -294,7 +294,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
     {
         $RefreshToken = $this->ReadAttributeString(\YouTubeMusic\Attribute::RefreshToken);
         if ($RefreshToken === '') {
-            echo $this->Translate('Not signed in to Google') . PHP_EOL;
+            echo $this->Translate('Not signed in to YouTube') . PHP_EOL;
             return false;
         }
         [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\Google::TokenUrl, \YouTubeMusic\DeviceFlow::RefreshRequest(
@@ -346,7 +346,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
         }
         $Token = $this->AccessToken();
         if ($Token === '') {
-            echo $this->Translate('Not signed in to Google') . PHP_EOL;
+            echo $this->Translate('Not signed in to YouTube') . PHP_EOL;
             return false;
         }
         $Headers = ['Authorization: Bearer ' . $Token, 'Accept: application/json'];
@@ -425,7 +425,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
         $Payload = \YouTubeMusic\InnerTubeClient::Browse($BrowseId, $Params);
         $Personal = in_array($BrowseId, self::PersonalBrowseIds, true);
         if ($Personal && !$this->SignedIn()) {
-            echo $this->Translate('Not signed in to Google') . PHP_EOL;
+            echo $this->Translate('Not signed in to YouTube') . PHP_EOL;
             return false;
         }
         // Mixe (VLRD…) liefert der Music-Client anonym mit fremdem Inhalt statt leer: Playlists mit Anmeldung immer per TV-Client
@@ -448,7 +448,17 @@ class YouTubeMusicAccount extends IPSModuleStrict
         if ($Response === null) {
             return false;
         }
-        return \YouTubeMusic\InnerTubeParser::Shelves($Response) + ['client' => self::ClientTv];
+        $Result = \YouTubeMusic\InnerTubeParser::Shelves($Response);
+        // Öffentliche Album-Playlists (VLOLAK5uy…) liefert der TV-Client leer, der Music-Client vollständig (live geprüft)
+        if (count($Result['shelves']) === 0 && $Personal && !in_array($BrowseId, self::PersonalBrowseIds, true)) {
+            $this->SendDebug(__FUNCTION__, 'TV client returned nothing, trying music client', 0);
+            $Response = $this->InnerTube('browse', $Payload, false, true);
+            $Music = $Response !== null ? \YouTubeMusic\InnerTubeParser::Shelves($Response) : null;
+            if ($Music !== null && count($Music['shelves']) > 0) {
+                return $Music + ['client' => self::ClientMusic];
+            }
+        }
+        return $Result + ['client' => self::ClientTv];
     }
 
     /**
@@ -468,7 +478,12 @@ class YouTubeMusicAccount extends IPSModuleStrict
         if ($Response === null) {
             return false;
         }
-        return \YouTubeMusic\InnerTubeParser::Shelves($Response) + ['client' => $Client];
+        $Result = \YouTubeMusic\InnerTubeParser::Shelves($Response);
+        // Zeigt die Fortsetzung wieder auf diese Seite (reloadContinuationData), ist die Liste zu Ende
+        if ($Result['continuation'] === $Token) {
+            $Result['continuation'] = '';
+        }
+        return $Result + ['client' => $Client];
     }
 
     /**
@@ -545,7 +560,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
         }
         $Token = $this->AccessToken();
         if ($Token === '') {
-            echo $this->Translate('Not signed in to Google') . PHP_EOL;
+            echo $this->Translate('Not signed in to YouTube') . PHP_EOL;
             return false;
         }
         $Url = 'https://www.googleapis.com/youtube/v3/videos/rate?' . http_build_query(['id' => $VideoId, 'rating' => $Rating]);
@@ -747,7 +762,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
             $Token = $this->AccessToken();
             if ($Token === '') {
                 if (!$Quiet) {
-                    echo $this->Translate('Not signed in to Google') . PHP_EOL;
+                    echo $this->Translate('Not signed in to YouTube') . PHP_EOL;
                 }
                 return null;
             }

@@ -76,9 +76,9 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     private const TilePlayerTimeout = 120;
 
     /**
-     * Einträge je Regal in den Inhalten der Kachel
+     * Einträge je Regal in den Inhalten der Kachel (eine Seite des TV-Clients hat bis zu 200, z. B. „Titel, die ich mag“)
      */
-    private const ShelfLimit = 100;
+    private const ShelfLimit = 200;
 
     /**
      * Höchstzahl Titel und Ladezeit (s), wenn eine Liste für den Browser-Player aufgelöst wird
@@ -99,7 +99,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     /**
      * Formularfelder, die nur bei Ausgabe auf Chrome Cast gelten
      */
-    private const CastFormFields = [\YouTubeMusic\Property::CastInstance, \YouTubeMusic\Property::EnableVariables, 'VariablesHint'];
+    private const CastFormFields = [\YouTubeMusic\Property::CastInstance, \YouTubeMusic\Property::PlayerName, \YouTubeMusic\Property::EnableVariables, 'VariablesHint'];
 
     /**
      * Formularfelder, die nur beim Kachel-Gerät (Wiedergabe im Browser) gelten
@@ -309,7 +309,8 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             case \YouTubeMusic\Variable::Playback:
                 match ((int) $Value) {
                     \YouTubeMusic\Playback::Previous => $this->Previous(),
-                    \YouTubeMusic\Playback::Stop, \YouTubeMusic\Playback::Pause => $this->Pause(),
+                    \YouTubeMusic\Playback::Stop     => $this->Stop(),
+                    \YouTubeMusic\Playback::Pause    => $this->Pause(),
                     \YouTubeMusic\Playback::Play     => $this->Play(),
                     \YouTubeMusic\Playback::Next     => $this->Next(),
                     default                          => throw new InvalidArgumentException('Invalid value'),
@@ -444,7 +445,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
 
     /**
      * Übergibt die laufende Wiedergabe (Titel, Liste, Position) an ein anderes Gerät am selben Account
-     * und pausiert dieses Gerät.
+     * und beendet sie auf diesem Gerät (Chrome Cast meldet sich ab, Kachel pausiert).
      *
      * @param  int $TargetID Instanz-ID des Ziel-Players
      * @return bool
@@ -466,7 +467,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             return false;
         }
         ob_start();
-        $this->Pause();
+        $this->Stop();
         ob_end_clean();
         return true;
     }
@@ -518,6 +519,26 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     public function Pause(): bool
     {
         return $this->LoungeCommand(\YouTubeMusic\LoungeCommand::Pause);
+    }
+
+    /**
+     * Beendet die Wiedergabe. Chrome Cast: Titel stoppen und die Fernbedienung vom Gerät abmelden, damit das Gerät
+     * frei ist (sonst bleibt die App mit „verbunden“ in der Pause stehen). Kachel: Pause in allen Browsern.
+     *
+     * @return bool
+     */
+    public function Stop(): bool
+    {
+        if (!$this->IsCast()) {
+            return $this->TileCommand(\YouTubeMusic\LoungeCommand::Pause, []);
+        }
+        $Session = is_array($this->LoungeSession) ? $this->LoungeSession : [];
+        if (($Session['sid'] ?? '') === '') {
+            return true;
+        }
+        $Result = $this->LoungeCommand(\YouTubeMusic\LoungeCommand::StopVideo);
+        $this->LeaveLounge();
+        return $Result;
     }
 
     /**
@@ -731,6 +752,11 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             echo '{"error":"denied"}';
             return;
         }
+        // Instanz auf Chrome Cast umgestellt: Browser-Player beendet sich
+        if ($this->IsCast()) {
+            echo '{"release":true}';
+            return;
+        }
         if (($_POST['type'] ?? '') === 'state' && is_string($_POST['data'] ?? null)) {
             ob_start();
             try {
@@ -848,9 +874,15 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             [$VideoIds, $More] = $this->RadioVideos($PlaylistId, $VideoId);
         } else {
             ob_start();
-            $Result = $this->SendToAccount(\YouTubeMusic\AccountFunction::Browse, ['BrowseId' => 'VL' . $PlaylistId, 'Params' => '']);
+            // Album-ID (MPREb_…) ist keine Playlist: Albumseite direkt
+            $BrowseId = str_starts_with($PlaylistId, 'MPRE') ? $PlaylistId : 'VL' . $PlaylistId;
+            $Result = $this->SendToAccount(\YouTubeMusic\AccountFunction::Browse, ['BrowseId' => $BrowseId, 'Params' => '']);
             ob_end_clean();
             [$VideoIds, $More] = $this->CollectVideos($Result);
+            // Mixe ohne eigene Seite (z. B. Künstler-Mix RDEM… aus den Abos) liefert nur die Warteschlange
+            if ($VideoIds === [] && str_starts_with($PlaylistId, 'RD')) {
+                [$VideoIds, $More] = $this->RadioVideos($PlaylistId, $VideoId);
+            }
         }
         if ($VideoIds === []) {
             $this->SendDebug(__FUNCTION__, 'no videos for ' . $PlaylistId, 0);
@@ -878,7 +910,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         }
         $Radio = (string) ($More['radio'] ?? '');
         $Last = (string) ($More['last'] ?? '');
-        if ($Radio !== '' && preg_match('/^RD(?:AMVM)?[A-Za-z0-9_-]{11}$/D', $Radio) === 1 && \YouTubeMusic\YouTubeLink::IsVideoId($Last)) {
+        if ($Radio !== '' && preg_match('/^RD[A-Za-z0-9_-]{2,78}$/D', $Radio) === 1 && \YouTubeMusic\YouTubeLink::IsVideoId($Last)) {
             [$VideoIds, $Next] = $this->RadioVideos($Radio, $Last);
             // Die Warteschlange beginnt mit dem letzten Titel des vorigen Fensters
             $VideoIds = array_values(array_filter($VideoIds, static fn (string $Id): bool => $Id !== $Last));
@@ -909,6 +941,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         $VideoIds = [];
         $Started = microtime(true);
         while (is_array($Result)) {
+            $Before = count($VideoIds);
             foreach ($Result['shelves'] ?? [] as $Shelf) {
                 foreach ($Shelf['items'] ?? [] as $Item) {
                     $Id = (string) ($Item['videoId'] ?? '');
@@ -918,7 +951,8 @@ class YouTubeMusicPlayer extends IPSModuleStrict
                 }
             }
             $More = ['token' => (string) ($Result['continuation'] ?? ''), 'client' => (string) ($Result['client'] ?? '')];
-            if ($More['token'] === '') {
+            // Seite ohne neuen Titel: Ende (eine Fortsetzung, die sich wiederholt, liefe sonst endlos)
+            if ($More['token'] === '' || count($VideoIds) === $Before) {
                 return [$VideoIds, null];
             }
             if (count($VideoIds) >= self::PlaylistLimit || microtime(true) - $Started > self::PlaylistSeconds) {
@@ -1309,6 +1343,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         match ($Command) {
             \YouTubeMusic\LoungeCommand::Play        => $Own ? $this->Play() : YTM_Play($Target),
             \YouTubeMusic\LoungeCommand::Pause       => $Own ? $this->Pause() : YTM_Pause($Target),
+            \YouTubeMusic\LoungeCommand::StopVideo   => $Own ? $this->Stop() : YTM_Stop($Target),
             \YouTubeMusic\LoungeCommand::Next        => $Own ? $this->Next() : YTM_Next($Target),
             \YouTubeMusic\LoungeCommand::Previous    => $Own ? $this->Previous() : YTM_Previous($Target),
             \YouTubeMusic\LoungeCommand::SeekTo      => $Own ? $this->Seek((float) $Text('newTime')) : YTM_Seek($Target, (float) $Text('newTime')),
@@ -1369,7 +1404,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         $Fields = array_flip(['type', 'title', 'subtitle', 'videoId', 'playlistId', 'browseId', 'params', 'thumbnail', 'duration']);
         $Trim = static fn (array $Items): array => array_map(static fn (array $Item): array => array_intersect_key($Item, $Fields), $Items);
         if (isset($Result['shelves'])) {
-            // Obergrenze gegen sehr große Seiten; eine Seite einer Playlist hat bis zu 100 Titel
+            // Obergrenze gegen sehr große Seiten
             $Result['shelves'] = array_map(static fn (array $Shelf): array => ['items' => $Trim(array_slice($Shelf['items'] ?? [], 0, self::ShelfLimit))] + $Shelf, $Result['shelves']);
         }
         if (isset($Result['items'])) {
@@ -1781,6 +1816,27 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         if ($State['state'] === \YouTubeMusic\LoungeState::Playing) {
             $this->SetVariable(\YouTubeMusic\Variable::Position, (int) round($State['position']));
         }
+    }
+
+    /**
+     * Meldet die Fernbedienung vom Gerät ab (wie die Web-App beim Trennen) und beendet die Abfrage. Fehler nur ins Debug.
+     *
+     * @return void
+     */
+    private function LeaveLounge(): void
+    {
+        if (!$this->lock(self::LockLounge)) {
+            return;
+        }
+        $Session = is_array($this->LoungeSession) ? $this->LoungeSession : [];
+        $Url = ($Session['sid'] ?? '') !== '' ? \YouTubeMusic\Lounge::Terminate($Session) : '';
+        $this->LoungeSession = $Session;
+        $this->unlock(self::LockLounge);
+        if ($Url !== '') {
+            [$HttpCode, , $CurlError] = $this->HttpRequest('POST', $Url, ['count' => '0'], $this->LoungeHeaders((string) ($Session['auth'] ?? '')));
+            $this->SendDebug(__FUNCTION__, 'terminate → HTTP ' . $HttpCode . ' ' . $CurlError, 0);
+        }
+        $this->StopLounge();
     }
 
     /**

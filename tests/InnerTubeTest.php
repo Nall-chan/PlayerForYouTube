@@ -98,6 +98,16 @@ class InnerTubeTest extends TestCase
         $this->assertSame('TestUser • Playlist • 10 Titel', $Items[1]['subtitle']);
     }
 
+    public function testTvLibraryTabs(): void
+    {
+        $Result = \YouTubeMusic\InnerTubeParser::Shelves($this->Vector('tv_library'));
+        $this->assertSame(['Letzte Aktivität', 'Playlists', 'Alben', 'Titel, die ich mag', 'Abos'], array_column($Result['tabs'], 'title'));
+        $this->assertSame([false, true, false, false, false], array_column($Result['tabs'], 'selected'));
+        // Fortsetzung ist das nextContinuationData des gewählten Reiters, nicht das reloadContinuationData eines anderen Reiters
+        $this->assertNotContains($Result['continuation'], array_column($Result['tabs'], 'token'));
+        $this->assertStringStartsWith('4qmFsgL2BRIX', $Result['continuation']);
+    }
+
     public function testTvQueue(): void
     {
         $Queue = \YouTubeMusic\InnerTubeParser::Queue($this->Vector('tv_next'), '4D7u5KF7SP8');

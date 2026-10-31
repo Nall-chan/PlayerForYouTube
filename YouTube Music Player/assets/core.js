@@ -109,6 +109,22 @@
     try { if (window.top !== window && window.top.document.head) return window.top; } catch (e) { /* kein Zugriff */ }
     return window;
   }
+  // Kennung dieser Kachel für gemerkte Ansichten: maximiert die Link-ID aus der Adresse des Hauptfensters, im Raster
+  // Kategorie und Position unter den Kacheln derselben Instanz (die Rahmen-Adresse enthält nur die Instanz).
+  // Ohne Hauptfenster (Apps): nur die Instanz.
+  function tileKey() {
+    try {
+      const host = hostWindow();
+      if (host === window) return '';
+      const m = /^#\/\d+\/(\d+)(?:\/(\d+))?/.exec(host.location.hash);
+      if (m && m[2]) return 'max' + m[2];
+      const same = [...host.document.querySelectorAll('iframe')].filter(f => {
+        try { return f.contentWindow.location.pathname === location.pathname; } catch (e) { return false; }
+      });
+      return (m ? m[1] : '') + '-' + same.indexOf(window.frameElement);
+    } catch (e) { return ''; }
+  }
+
   function startRuntime() {
     const host = hostWindow();
     // Ältere Laufzeit (vor einem Update) abbauen und durch die aktuelle ersetzen
@@ -198,12 +214,12 @@
     runtime.exec(name, args);
   }
 
-  // Übergabe wie Spotify Connect: Ziel startet Titel, Liste und Position, Quelle pausiert
+  // Übergabe wie Spotify Connect: Ziel startet Titel, Liste und Position, Quelle beendet (Chrome Cast meldet sich ab)
   function transfer(from, to) {
     const c = from === own ? { s: state, at: stateAt } : { s: (devices[from] || {}).state || {}, at: (devices[from] || {}).at };
     if (!c.s.videoId) { notice(T('Nothing is playing on this device')); return; }
     commandTo(to, 'setPlaylist', { videoId: c.s.videoId, listId: c.s.listId || '', currentTime: Math.floor(position(c)) });
-    commandTo(from, 'pause', {});
+    commandTo(from, 'stopVideo', {});
     select(to);
     closeDevices();
   }
@@ -241,6 +257,24 @@
 
   const deviceLabel = d => (d.own && isTileDevice ? T('This device') : d.name);
 
+  // Künstler · Album; in der Voll-Ansicht öffnet ein Klick die Suche danach
+  function setSub(el, artist, album) {
+    el.textContent = '';
+    [[artist, 'artist'], [album, 'album']].filter(p => p[0]).forEach((p, i) => {
+      if (i) el.append(' · ');
+      const part = document.createElement('span');
+      part.className = 'sub-link';
+      part.textContent = p[0];
+      part.onclick = e => {
+        if (!app.classList.contains('size-full') || !views) return;
+        e.stopPropagation();
+        setNowPlaying(false);
+        views.searchFor(p[0], p[1]);
+      };
+      el.append(part);
+    });
+  }
+
   function render() {
     const c = current();
     const s = c.s, meta = c.meta;
@@ -248,14 +282,14 @@
     const unknown = s.videoId && !meta.title && !s.title && shownTitle !== '';
     if (!unknown) {
       const title = meta.title || s.title || (s.videoId ? s.videoId : T('Nothing playing'));
-      const sub = [meta.artist || s.author || '', meta.album || ''].filter(Boolean).join(' · ');
+      const artist = meta.artist || s.author || '', album = meta.album || '';
       const cover = meta.cover || (s.videoId ? 'https://i.ytimg.com/vi/' + s.videoId + '/hqdefault.jpg' : '');
       const image = cover ? 'url("' + cover + '")' : '';
       shownTitle = s.videoId ? title : '';
       $('title').textContent = title;
-      $('sub').textContent = sub;
+      setSub($('sub'), artist, album);
       $('miniTitle').textContent = title;
-      $('miniSub').textContent = sub;
+      setSub($('miniSub'), artist, album);
       $('art').style.backgroundImage = image;
       $('miniArt').style.backgroundImage = image;
       $('bg').style.backgroundImage = image;
@@ -351,11 +385,17 @@
     app.classList.toggle('tiny', size === 'mini' && w < 400);
     app.classList.toggle('np-open', nowPlaying && size === 'full');
     app.classList.toggle('wide', size === 'full' && w >= 900);
+    // Große Kacheln: Steuerung mitwachsen lassen (CSS zoom auf .info), in Schritten von 0,05 gegen Flackern beim Ziehen
+    const portrait = w <= h;
+    let ui = 1;
+    if (size === 'compact') ui = portrait ? Math.min(1.6, w / 420, h / 700) : Math.min(1.6, h / 300, w / 1000);
+    else if (nowPlaying && size === 'full') ui = portrait || w <= 760 ? Math.min(1.6, w / 560, h / 1000) : Math.min(2, w / 1300, h / 750);
+    app.style.setProperty('--ui', String(Math.round(Math.max(1, ui) * 20) / 20));
     if (size === 'full' && views) views.ensure();
   }
 
-  // „Läuft gerade“ aufgeklappt: bleibt beim Wechsel zwischen Kachel und Vollbild erhalten (die Visu baut die Kachel neu auf)
-  const npKey = 'ytm-now-playing-' + own;
+  // „Läuft gerade“ aufgeklappt: je Kachel gemerkt (die Visu baut Kacheln beim Maximieren/Verkleinern neu auf)
+  const npKey = 'ytm-now-playing-' + own + '-' + tileKey();
   let nowPlaying = false;
   try { nowPlaying = sessionStorage.getItem(npKey) === '1'; } catch (e) { /* kein Speicher */ }
   function setNowPlaying(open) {
@@ -461,10 +501,14 @@
     play: args => command('setPlaylist', args),
     current: () => current().s,
     position: () => position(current()),
-    storageKey: 'ytm-view-' + own,
+    storageKey: 'ytm-view-' + own + '-' + tileKey(),
   });
 
   if (isTileDevice) startRuntime();
+  else {
+    // Instanz auf Chrome Cast umgestellt: Browser-Player dieser Instanz im Hauptfenster beenden (sonst spielt er unbedienbar weiter)
+    try { const host = hostWindow(); if (host.__ytmHostRelease) host.__ytmHostRelease(own); } catch (e) { /* kein Zugriff */ }
+  }
   // Fehlersuche: YouTube sperrt eingebettete Musikvideos, wenn die Visu über eine IP-Adresse geöffnet ist
   debug('tile loaded: origin ' + location.origin + ', main window ' + (hostWindow() !== window ? 'yes' : 'no') + ', app ' + (window.RequestAction ? 'yes' : 'no'));
   layout();
