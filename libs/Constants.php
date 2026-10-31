@@ -44,6 +44,10 @@ namespace YouTubeMusic {
         public const ClientSecret = 'ClientSecret';
         public const PlayerName = 'PlayerName';
         public const HiddenPlayback = 'HiddenPlayback';
+        /**
+         * Video des Browser-Players: 0 schwebend, 1 in der Kachel anstelle des Covers (siehe VideoDisplay)
+         */
+        public const VideoDisplay = 'VideoDisplay';
         public const DeviceType = 'DeviceType';
         public const CastInstance = 'CastInstance';
         public const EnableVariables = 'EnableVariables';
@@ -80,6 +84,21 @@ namespace YouTubeMusic {
         public const Auto = 0;
         public const On = 1;
         public const Off = 2;
+    }
+
+    /**
+     * Auswahl der Property VideoDisplay (Kachel-Gerät)
+     */
+    class VideoDisplay
+    {
+        /**
+         * Schwebendes, verschiebbares Fenster im Visu-Hauptfenster
+         */
+        public const Floating = 0;
+        /**
+         * Über der Cover-Fläche einer sichtbaren Kachel (ab 200×200 px), sonst schwebend
+         */
+        public const Tile = 1;
     }
 
     /**

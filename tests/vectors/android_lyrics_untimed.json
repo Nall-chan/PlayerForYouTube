@@ -1,0 +1,23 @@
+{
+    "contents": {
+        "elementRenderer": {
+            "newElement": {
+                "type": {
+                    "componentType": {
+                        "model": {
+                            "timedLyricsModel": {
+                                "lyricsData": {
+                                    "timedLyricsData": [
+                                        {"lyricLine": "Zeile eins"},
+                                        {"lyricLine": "Zeile zwei"}
+                                    ],
+                                    "sourceMessage": "Quelle: LyricFind"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

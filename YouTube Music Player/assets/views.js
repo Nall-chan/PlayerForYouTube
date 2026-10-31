@@ -315,7 +315,8 @@ window.YTMViews = function (api) {
   // sonst (und beim Liedtext) leise neu laden, ohne die Anzeige vorher zu leeren
   function trackChanged(videoId) {
     const page = stack[stack.length - 1];
-    if (!page || (page.main !== 'queue' && page.main !== 'lyrics') || videoId === shownTrack) return;
+    // Leere ID (kurze Lücke beim Titelwechsel) nicht als „Keine Wiedergabe“ werten
+    if (!page || (page.main !== 'queue' && page.main !== 'lyrics') || !videoId || videoId === shownTrack) return;
     const body = $('vBody');
     if (page.main === 'queue') {
       const rows = [...body.querySelectorAll('.row')];

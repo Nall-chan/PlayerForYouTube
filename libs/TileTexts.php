@@ -64,6 +64,7 @@ namespace YouTubeMusic {
             'No lyrics for this title',
             'Charts',
             'Radio',
+            'Open in YouTube Music',
         ];
     }
 }

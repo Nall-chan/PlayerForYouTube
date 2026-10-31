@@ -97,12 +97,29 @@
             ]
         },
         {
+            "type": "Select",
+            "name": "VideoDisplay",
+            "caption": "Show video",
+            "width": "400px",
+            "options": [
+                {
+                    "caption": "Floating window (movable)",
+                    "value": 0
+                },
+                {
+                    "caption": "In the tile instead of the cover (from 200×200 px)",
+                    "value": 1
+                }
+            ]
+        },
+        {
             "type": "CheckBox",
             "name": "HiddenPlayback",
             "caption": "Continue playback without a visible player"
         },
         {
             "type": "Label",
+            "name": "HiddenHint",
             "caption": "The YouTube API Services Policies require a visible player of at least 200×200 px. Hidden playback is at your own risk."
         }
     ],

@@ -75,6 +75,20 @@ class InnerTubeTest extends TestCase
         $this->assertSame('Quelle: LyricFind', $Lyrics['source']);
     }
 
+    // Struktur einer echten Antwort des Android-Clients, Liedtext durch Platzhalter ersetzt (Urheberrecht)
+    public function testTimedLyrics(): void
+    {
+        $Lyrics = \YouTubeMusic\InnerTubeParser::TimedLyrics($this->Vector('android_lyrics_timed'));
+        $this->assertSame('Quelle: LyricFind', $Lyrics['source']);
+        $this->assertCount(3, $Lyrics['lines']);
+        $this->assertSame(['text' => 'Zeile eins', 'start' => 8540, 'end' => 12540], $Lyrics['lines'][1]);
+    }
+
+    public function testTimedLyricsWithoutTimes(): void
+    {
+        $this->assertSame([], \YouTubeMusic\InnerTubeParser::TimedLyrics($this->Vector('android_lyrics_untimed'))['lines']);
+    }
+
     public function testTvLibrary(): void
     {
         $Items = \YouTubeMusic\InnerTubeParser::Shelves($this->Vector('tv_library'))['shelves'][0]['items'];

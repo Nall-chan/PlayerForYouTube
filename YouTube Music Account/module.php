@@ -513,6 +513,14 @@ class YouTubeMusicAccount extends IPSModuleStrict
         if ($LyricsId === '') {
             return ['text' => '', 'source' => ''];
         }
+        // Zeitgestempelt (synchron zum Titel) liefert nur der Android-Client; ohne Zeiten der normale Liedtext
+        $Timed = $this->AndroidInnerTube('browse', \YouTubeMusic\InnerTubeClient::Browse($LyricsId));
+        if ($Timed !== null) {
+            $Lyrics = \YouTubeMusic\InnerTubeParser::TimedLyrics($Timed);
+            if ($Lyrics['lines'] !== []) {
+                return ['text' => implode("\n", array_column($Lyrics['lines'], 'text')), 'source' => $Lyrics['source'], 'lines' => $Lyrics['lines']];
+            }
+        }
         $Response = $this->InnerTube('browse', \YouTubeMusic\InnerTubeClient::Browse($LyricsId), false);
         if ($Response === null) {
             return false;
@@ -763,6 +771,25 @@ class YouTubeMusicAccount extends IPSModuleStrict
             echo $this->Translate('YouTube request failed') . ': ' . $Reason . PHP_EOL;
         }
         return null;
+    }
+
+    /**
+     * Anfrage an InnerTube als Android-App von YouTube Music (ohne Anmeldung). Fehler nur ins Debug.
+     *
+     * @param  string $Endpoint
+     * @param  array $Payload
+     * @return array|null
+     */
+    private function AndroidInnerTube(string $Endpoint, array $Payload): ?array
+    {
+        [$Language, $Country] = $this->LanguageAndCountry();
+        $Context = \YouTubeMusic\InnerTubeClient::Context(\YouTubeMusic\InnerTubeClient::AndroidClientName, \YouTubeMusic\InnerTubeClient::AndroidClientVersion, $Language, $Country);
+        $Context['client']['androidSdkVersion'] = \YouTubeMusic\InnerTubeClient::AndroidSdkVersion;
+        $Headers = ['Content-Type: application/json', 'User-Agent: ' . \YouTubeMusic\InnerTubeClient::AndroidUserAgent];
+        [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\InnerTubeClient::MusicUrl . $Endpoint . '?prettyPrint=false', \YouTubeMusic\InnerTubeClient::Body($Context, $Payload), $Headers, 15);
+        $this->SendDebug('InnerTube', 'Android ' . $Endpoint . ' ' . json_encode($Payload, JSON_UNESCAPED_SLASHES) . ' → HTTP ' . $HttpCode . ', ' . strlen($Body) . ' Bytes ' . $CurlError, 0);
+        $Data = json_decode($Body, true);
+        return $HttpCode === 200 && is_array($Data) ? $Data : null;
     }
 
     /**

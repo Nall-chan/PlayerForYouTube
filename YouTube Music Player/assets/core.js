@@ -10,6 +10,12 @@
   const $ = id => document.getElementById(id);
   const app = $('app');
   const own = cfg.instance;
+  // Überschrift der Kachel: Die Visu übergibt in der Adresse margintop (mit Titel 60, ohne 15; live gemessen 9.1)
+  // und legt den Titel über die Kachel. Den Inhalt um den Unterschied nach unten rücken.
+  try {
+    const top = Number(new URLSearchParams(location.search).get('margintop'));
+    if (top > 15) document.documentElement.style.setProperty('--title-space', (top - 15) + 'px');
+  } catch (e) { /* ohne Angabe: kein Titel */ }
   const isTileDevice = cfg.deviceType === 0;
   let state = cfg.state || {};          // Zustand des eigenen Geräts
   let stateAt = Date.now();
@@ -19,6 +25,7 @@
   if (cfg.state && cfg.state.videoId && cfg.meta && cfg.meta.title) metaCache[cfg.state.videoId] = cfg.meta;
   let runtime = null;
   let views = null;
+  let shownTitle = '';      // angezeigter Titel (leer: keine Wiedergabe)
   // Listen, die das Modul gerade auflöst (Anfrage-ID → Argumente von setPlaylist)
   const pendingLists = {};
   let seeking = false;
@@ -120,6 +127,12 @@
       render: s => { state = s; stateAt = Date.now(); render(); },
       notice: notice,
       frame: host === window ? null : window.frameElement,
+      // Cover-Fläche für das Video (Einstellung „Video anzeigen: in der Kachel“); nur beim eigenen Gerät und sichtbarem Cover
+      slot: () => {
+        if (selected !== own) return null;
+        const r = $('art').getBoundingClientRect();
+        return r.width && r.height ? r : null;
+      },
     });
     const s = runtime.state();
     if (s && s.videoId) {
@@ -131,12 +144,22 @@
     stateAt = Date.now();
   }
 
-  function notice(text) {
+  // Hinweis unten in der Kachel; optional mit Link (z. B. Titel in der YouTube-Music-App öffnen), dann länger sichtbar
+  function notice(text, link) {
     const n = $('notice');
     n.textContent = text;
+    if (link && /^https:\/\/music\.youtube\.com\//.test(link)) {
+      const a = document.createElement('a');
+      a.href = link;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'notice-link';
+      a.textContent = T('Open in YouTube Music');
+      n.append(' ', a);
+    }
     n.hidden = !text;
     clearTimeout(notice.timer);
-    if (text) notice.timer = setTimeout(() => { n.hidden = true; }, 8000);
+    if (text) notice.timer = setTimeout(() => { n.hidden = true; }, link ? 20000 : 8000);
   }
 
   // Befehl an das gewählte Gerät
@@ -216,18 +239,23 @@
   function render() {
     const c = current();
     const s = c.s, meta = c.meta;
-    const title = meta.title || s.title || (s.videoId ? s.videoId : T('Nothing playing'));
-    const sub = [meta.artist || s.author || '', meta.album || ''].filter(Boolean).join(' · ');
-    const cover = meta.cover || (s.videoId ? 'https://i.ytimg.com/vi/' + s.videoId + '/hqdefault.jpg' : '');
-    const image = cover ? 'url("' + cover + '")' : '';
-    $('title').textContent = title;
-    $('sub').textContent = sub;
-    $('miniTitle').textContent = title;
-    $('miniSub').textContent = sub;
-    $('art').style.backgroundImage = image;
-    $('miniArt').style.backgroundImage = image;
-    $('bg').style.backgroundImage = image;
-    app.classList.toggle('has-cover', !!cover);
+    // Neuer Titel, Name noch unbekannt (Metadaten unterwegs): bisherige Anzeige stehen lassen statt die ID zu zeigen
+    const unknown = s.videoId && !meta.title && !s.title && shownTitle !== '';
+    if (!unknown) {
+      const title = meta.title || s.title || (s.videoId ? s.videoId : T('Nothing playing'));
+      const sub = [meta.artist || s.author || '', meta.album || ''].filter(Boolean).join(' · ');
+      const cover = meta.cover || (s.videoId ? 'https://i.ytimg.com/vi/' + s.videoId + '/hqdefault.jpg' : '');
+      const image = cover ? 'url("' + cover + '")' : '';
+      shownTitle = s.videoId ? title : '';
+      $('title').textContent = title;
+      $('sub').textContent = sub;
+      $('miniTitle').textContent = title;
+      $('miniSub').textContent = sub;
+      $('art').style.backgroundImage = image;
+      $('miniArt').style.backgroundImage = image;
+      $('bg').style.backgroundImage = image;
+      app.classList.toggle('has-cover', !!cover);
+    }
     const play = isPlaying(s) ? 'pause' : 'play';
     $('bPlay').innerHTML = icon(play);
     $('bPlay').title = T(isPlaying(s) ? 'Pause' : 'Play');

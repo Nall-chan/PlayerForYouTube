@@ -53,6 +53,13 @@ namespace YouTubeMusic {
          */
         public const MusicClientVersion = '1.20261027.10.00';
         public const TvClientVersion = '7.20261027.00.00';
+        /**
+         * Android-App von YouTube Music: liefert zeitgestempelte Liedtexte (ohne Anmeldung, live geprüft 2026-10-31)
+         */
+        public const AndroidClientName = 'ANDROID_MUSIC';
+        public const AndroidClientVersion = '7.27.52';
+        public const AndroidSdkVersion = 34;
+        public const AndroidUserAgent = 'com.google.android.apps.youtube.music/7.27.52 (Linux; U; Android 14) gzip';
 
         /**
          * Filter der Musiksuche (Parameter `params`)
@@ -300,6 +307,39 @@ namespace YouTubeMusic {
                 }
                 $Result['text'] = str_replace("\r\n", "\n", self::RunsText($Value['description'] ?? []));
                 $Result['source'] = self::RunsText($Value['footer'] ?? []);
+                return false;
+            });
+            return $Result;
+        }
+
+        /**
+         * Zeitgestempelter Liedtext aus der Antwort des Android-Clients (browse mit der Lyrics-ID MPLY…).
+         *
+         * @param  array $Response
+         * @return array{lines: list<array{text: string, start: int, end: int}>, source: string} lines leer, wenn keine Zeiten vorliegen
+         */
+        public static function TimedLyrics(array $Response): array
+        {
+            $Result = ['lines' => [], 'source' => ''];
+            self::Walk($Response, function (string $Key, array $Value) use (&$Result): bool
+            {
+                if ($Key !== 'lyricsData' || !is_array($Value['timedLyricsData'] ?? null)) {
+                    return true;
+                }
+                $Result['source'] = self::Clean((string) ($Value['sourceMessage'] ?? ''));
+                foreach ($Value['timedLyricsData'] as $Line) {
+                    $Cue = $Line['cueRange'] ?? null;
+                    // Zeilen ohne Zeiten: kein synchroner Text (dann bleibt es beim normalen Liedtext)
+                    if (!is_array($Cue) || !isset($Cue['startTimeMilliseconds'])) {
+                        $Result['lines'] = [];
+                        return false;
+                    }
+                    $Result['lines'][] = [
+                        'text'  => self::Clean((string) ($Line['lyricLine'] ?? '')),
+                        'start' => (int) $Cue['startTimeMilliseconds'],
+                        'end'   => (int) ($Cue['endTimeMilliseconds'] ?? $Cue['startTimeMilliseconds']),
+                    ];
+                }
                 return false;
             });
             return $Result;

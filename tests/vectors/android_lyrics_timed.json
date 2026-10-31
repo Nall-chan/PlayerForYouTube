@@ -1,0 +1,24 @@
+{
+    "contents": {
+        "elementRenderer": {
+            "newElement": {
+                "type": {
+                    "componentType": {
+                        "model": {
+                            "timedLyricsModel": {
+                                "lyricsData": {
+                                    "timedLyricsData": [
+                                        {"lyricLine": "♪", "cueRange": {"startTimeMilliseconds": "0", "endTimeMilliseconds": "8540"}},
+                                        {"lyricLine": "Zeile eins", "cueRange": {"startTimeMilliseconds": "8540", "endTimeMilliseconds": "12540"}},
+                                        {"lyricLine": "Zeile zwei", "cueRange": {"startTimeMilliseconds": "12540", "endTimeMilliseconds": "20990"}}
+                                    ],
+                                    "sourceMessage": "Quelle: LyricFind"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

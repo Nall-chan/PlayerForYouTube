@@ -97,6 +97,11 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     private const CastFormFields = [\YouTubeMusic\Property::CastInstance, \YouTubeMusic\Property::EnableVariables, 'VariablesHint'];
 
     /**
+     * Formularfelder, die nur beim Kachel-Gerät (Wiedergabe im Browser) gelten
+     */
+    private const TileFormFields = [\YouTubeMusic\Property::VideoDisplay, \YouTubeMusic\Property::HiddenPlayback, 'HiddenHint'];
+
+    /**
      * WebHook der Kachel-Laufzeit: /hook/youtubemusic-<InstanzID>
      */
     private const HookPrefix = 'youtubemusic-';
@@ -134,6 +139,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::CastInstance, 0);
         $this->RegisterPropertyString(\YouTubeMusic\Property::PlayerName, 'Symcon');
         $this->RegisterPropertyBoolean(\YouTubeMusic\Property::HiddenPlayback, false);
+        $this->RegisterPropertyInteger(\YouTubeMusic\Property::VideoDisplay, \YouTubeMusic\VideoDisplay::Floating);
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::EnableVariables, \YouTubeMusic\EnableVariables::Auto);
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::ControlMode, \YouTubeMusic\ControlMode::All);
         $this->RegisterPropertyString(\YouTubeMusic\Property::ControlDevices, '[]');
@@ -166,7 +172,6 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         }
         $this->RegisterMessage(0, IPS_KERNELSTARTED);
         $this->ApplyVariables();
-        $this->ApplyTileDisplay();
         $this->PushToTiles([\YouTubeMusic\TileMessage::Type => \YouTubeMusic\TileMessage::Reload]);
         if (!$this->HasAccount()) {
             $this->SetStatus(self::StatusNoAccount);
@@ -214,6 +219,9 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             if (in_array($Element['name'] ?? '', self::CastFormFields, true)) {
                 $Element['visible'] = $Cast;
             }
+            if (in_array($Element['name'] ?? '', self::TileFormFields, true)) {
+                $Element['visible'] = !$Cast;
+            }
             if (($Element['name'] ?? '') === \YouTubeMusic\Property::ControlDevices) {
                 $Element['visible'] = $this->ReadPropertyInteger(\YouTubeMusic\Property::ControlMode) === \YouTubeMusic\ControlMode::Selected;
             }
@@ -253,6 +261,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             'hostVersion'    => md5($Host),
             'deviceType'     => $this->ReadPropertyInteger(\YouTubeMusic\Property::DeviceType),
             'hiddenPlayback' => $this->ReadPropertyBoolean(\YouTubeMusic\Property::HiddenPlayback),
+            'videoInTile'    => $this->ReadPropertyInteger(\YouTubeMusic\Property::VideoDisplay) === \YouTubeMusic\VideoDisplay::Tile,
             // Nur zur Anzeige in der Kachel
             'playerName'     => IPS_GetName($this->InstanceID),
             // Für die Player-Laufzeit im Hauptfenster, solange keine Kachel eingehängt ist
@@ -306,6 +315,9 @@ class YouTubeMusicPlayer extends IPSModuleStrict
                 $Cast = (int) $Value === \YouTubeMusic\DeviceType::ChromeCast;
                 foreach (self::CastFormFields as $Field) {
                     $this->UpdateFormField($Field, 'visible', $Cast);
+                }
+                foreach (self::TileFormFields as $Field) {
+                    $this->UpdateFormField($Field, 'visible', !$Cast);
                 }
                 $this->UpdateFormField('Requests', 'visible', $Cast);
                 return;
@@ -1797,24 +1809,6 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         // Zähler überstehen Neustarts nur bis zum letzten Speichern (Tageswechsel)
         $Stats = json_decode($this->ReadAttributeString(\YouTubeMusic\Attribute::RequestStats), true);
         $this->RequestStats = is_array($Stats) ? $Stats : [];
-    }
-
-    /**
-     * Darstellung der Kachel: Titel aus (die Kachel zeigt selbst Titel und Steuerung), Maximieren-Button an
-     * (maximiert zeigt die Kachel alle Bereiche). Das Kachel-SDK kann beides nicht selbst festlegen,
-     * deshalb über die Objekteinstellungen der eigenen Instanz (ab Symcon 9.1).
-     * Immer ausdrücklich setzen: Die Konsole kennt zusätzlich „nicht gesetzt“ (Regler mittig),
-     * IPS_GetObject meldet dafür false und unterscheidet es nicht von „sichtbar“.
-     *
-     * @return void
-     */
-    private function ApplyTileDisplay(): void
-    {
-        if (!function_exists('IPS_SetHiddenTitle') || !function_exists('IPS_SetHiddenMaximize')) {
-            return;
-        }
-        IPS_SetHiddenTitle($this->InstanceID, true);
-        IPS_SetHiddenMaximize($this->InstanceID, false);
     }
 
     /**

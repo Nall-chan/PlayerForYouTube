@@ -11,6 +11,10 @@
   const API_URL = 'https://www.youtube.com/iframe_api';
   const REPORT_INTERVAL = 10000;
   const POLL_INTERVAL = 2000;
+  const VIDEO_W = 356;
+  const VIDEO_H = 200;
+  const BAR_H = 24;
+  const MIN_VIDEO = 200;
 
   function randomId() {
     const bytes = new Uint8Array(12);
@@ -48,6 +52,7 @@
     this.more = null;          // Fortsetzung langer Listen (wanderndes Fenster)
     this.extending = false;
     this.seen = new Set();     // schon geladene Titel der aktuellen Liste
+    this.last = null;          // zuletzt bekannte Video-ID mit Titel (für die kurze Lücke beim Titelwechsel)
     this.lastReport = '';
     this.lastReportAt = 0;
     this.commandAfter = 0;
@@ -76,7 +81,8 @@
   };
 
   Runtime.prototype.attach = function (tile) {
-    this.liveTiles();
+    // Eine neu geladene Kachel behält ihren Rahmen: alte Anmeldung desselben Rahmens ersetzen
+    this.tiles = this.liveTiles().filter(t => !tile.frame || t.frame !== tile.frame);
     this.tiles.push(tile);
     if (tile.frame) this.visu = visuOf(location.hash);
     const s = this.state();
@@ -101,7 +107,8 @@
     if (this.box) this.box.style.display = 'none';
   };
 
-  // Schwebende Box mit dem Video (rechts unten im Hauptfenster)
+  // Box mit dem Video im Hauptfenster: schwebend (verschiebbar), über der Cover-Fläche einer Kachel
+  // (Einstellung „Video anzeigen“) oder unsichtbar geparkt („Wiedergabe ohne sichtbaren Player“)
   Runtime.prototype.ensureBox = function () {
     if (this.box && this.box.isConnected) return this.box;
     const id = 'ytmBox' + this.instance;
@@ -109,10 +116,12 @@
     if (!box) {
       box = document.createElement('div');
       box.id = id;
-      box.style.cssText = 'position:fixed;right:16px;bottom:16px;width:356px;height:224px;z-index:2147483000;background:#000;'
-        + 'border-radius:10px;overflow:hidden;box-shadow:0 6px 24px #0009;display:none';
+      box.style.cssText = 'position:fixed;left:0;top:0;width:' + VIDEO_W + 'px;height:' + (VIDEO_H + BAR_H) + 'px;z-index:2147483000;'
+        + 'background:#000;border-radius:10px;overflow:hidden;box-shadow:0 6px 24px #0009;display:none';
       const bar = document.createElement('div');
-      bar.style.cssText = 'height:24px;color:#fff;font:12px sans-serif;display:flex;align-items:center;justify-content:space-between;padding:0 8px';
+      bar.className = 'ytm-bar';
+      bar.style.cssText = 'height:' + BAR_H + 'px;color:#fff;font:12px sans-serif;display:flex;align-items:center;justify-content:space-between;'
+        + 'padding:0 8px;cursor:move;user-select:none;touch-action:none';
       const label = document.createElement('span');
       label.textContent = this.cfg.playerName || 'YouTube Music';
       const close = document.createElement('span');
@@ -120,6 +129,7 @@
       close.style.cursor = 'pointer';
       close.title = (this.cfg.texts && this.cfg.texts.Close) || 'Close';
       close.addEventListener('click', () => { this.exec('pause', {}); box.style.display = 'none'; });
+      close.addEventListener('pointerdown', e => e.stopPropagation());
       bar.appendChild(label);
       bar.appendChild(close);
       const holder = document.createElement('div');
@@ -127,22 +137,110 @@
       box.appendChild(bar);
       box.appendChild(holder);
       document.body.appendChild(box);
+      this.dragBox(bar);
     }
     this.box = box;
     return box;
+  };
+
+  // Box zeigen und ihre Lage laufend nachführen (Kachel scrollt, Fenstergröße ändert sich)
+  Runtime.prototype.showBox = function () {
+    const box = this.ensureBox();
+    box.style.display = 'block';
+    this.placed = '';
+    if (this.looping) return;
+    this.looping = true;
+    const step = () => {
+      if (!this.box || this.box.style.display === 'none' || !this.box.isConnected) { this.looping = false; return; }
+      this.place();
+      window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+  };
+
+  Runtime.prototype.place = function () {
+    let t = null;
+    if (this.cfg.hiddenPlayback) t = { left: -10000, top: 0, w: VIDEO_W, h: VIDEO_H, bar: false };
+    else if (this.cfg.videoInTile) t = this.tileSlot();
+    if (!t) { const p = this.floatPos(); t = { left: p.left, top: p.top, w: VIDEO_W, h: VIDEO_H, bar: true }; }
+    const key = [t.left, t.top, t.w, t.h].map(Math.round).join(',') + t.bar;
+    if (key === this.placed) return;
+    this.placed = key;
+    const box = this.box;
+    box.style.left = Math.round(t.left) + 'px';
+    box.style.top = Math.round(t.top) + 'px';
+    box.style.width = Math.round(t.w) + 'px';
+    box.style.height = Math.round(t.h + (t.bar ? BAR_H : 0)) + 'px';
+    box.style.boxShadow = t.bar ? '0 6px 24px #0009' : 'none';
+    box.firstChild.style.display = t.bar ? 'flex' : 'none';
+    if (this.player && this.player.setSize) this.player.setSize(Math.round(t.w), Math.round(t.h));
+  };
+
+  // Größte sichtbare Cover-Fläche einer Kachel dieser Instanz, mindestens 200×200 px (YouTube API Services Policies)
+  Runtime.prototype.tileSlot = function () {
+    let best = null;
+    this.liveTiles().forEach(t => {
+      const s = t.slot ? t.slot() : null;
+      if (!s || s.width < MIN_VIDEO || s.height < MIN_VIDEO) return;
+      const f = t.frame ? t.frame.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+      // Fläche muss ganz in der Kachel und im Fenster liegen
+      if (s.left < 0 || s.top < 0 || s.right > f.width + 1 || s.bottom > f.height + 1) return;
+      const left = f.left + s.left, top = f.top + s.top;
+      if (left < 0 || top < 0 || left + s.width > window.innerWidth || top + s.height > window.innerHeight) return;
+      if (!best || s.width * s.height > best.w * best.h) best = { left, top, w: s.width, h: s.height, bar: false };
+    });
+    return best;
+  };
+
+  // Gemerkte Lage der schwebenden Box (je Instanz im Browser), sonst rechts unten; immer im Fenster
+  Runtime.prototype.floatPos = function () {
+    if (!this.pos) {
+      try { this.pos = JSON.parse(localStorage.getItem('ytm-box-' + this.instance) || 'null'); } catch (e) { this.pos = null; }
+    }
+    const w = window.innerWidth, h = window.innerHeight;
+    const p = this.pos || { left: w - VIDEO_W - 16, top: h - VIDEO_H - BAR_H - 16 };
+    return {
+      left: Math.max(0, Math.min(w - VIDEO_W, p.left)),
+      top: Math.max(0, Math.min(h - VIDEO_H - BAR_H, p.top)),
+    };
+  };
+
+  // Schwebende Box an der Titelleiste verschieben
+  Runtime.prototype.dragBox = function (bar) {
+    let start = null;
+    bar.addEventListener('pointerdown', e => {
+      const p = this.floatPos();
+      start = { x: e.clientX, y: e.clientY, left: p.left, top: p.top };
+      bar.setPointerCapture(e.pointerId);
+    });
+    bar.addEventListener('pointermove', e => {
+      if (!start) return;
+      this.pos = { left: start.left + e.clientX - start.x, top: start.top + e.clientY - start.y };
+      this.place();
+    });
+    const end = () => {
+      if (!start) return;
+      start = null;
+      this.pos = this.floatPos();
+      try { localStorage.setItem('ytm-box-' + this.instance, JSON.stringify(this.pos)); } catch (e) { /* kein Speicher */ }
+    };
+    bar.addEventListener('pointerup', end);
+    bar.addEventListener('pointercancel', end);
   };
 
   Runtime.prototype.ensurePlayer = function () {
     if (this.ready) return this.ready;
     this.ready = loadApi().then(() => new Promise(resolve => {
       const box = this.ensureBox();
-      box.style.display = 'block';
+      this.showBox();
       this.player = new window.YT.Player(box.id + 'Player', {
-        width: 356,
-        height: 200,
-        playerVars: { playsinline: 1, rel: 0, autoplay: 1, origin: location.origin },
+        width: VIDEO_W,
+        height: VIDEO_H,
+        // Bedienung macht die Kachel: ohne Bedienleiste des Players (offizielle Parameter, nichts wird überdeckt);
+        // Klicks im Player selbst lassen sich nicht abfangen (anderer Ursprung)
+        playerVars: { playsinline: 1, rel: 0, autoplay: 1, controls: 0, fs: 0, iv_load_policy: 3, disablekb: 1, origin: location.origin },
         events: {
-          onReady: () => resolve(this.player),
+          onReady: () => { this.placed = ''; resolve(this.player); },
           onStateChange: e => {
             this.report(true);
             // Letzter Titel des Fensters zu Ende: nächstes Fenster der Liste laden
@@ -161,7 +259,7 @@
     if (command !== 'setPlaylist' && !this.player) return Promise.resolve(false);
     return this.ensurePlayer().then(p => {
       // Der Player muss beim Abspielen sichtbar sein, auch nachdem die Box geschlossen wurde
-      if (command === 'setPlaylist' || command === 'play') this.ensureBox().style.display = 'block';
+      if (command === 'setPlaylist' || command === 'play') this.showBox();
       switch (command) {
         case 'setPlaylist': {
           const start = Number(args.currentTime) || 0;
@@ -179,7 +277,6 @@
           } else if (args.videoId) {
             p.loadVideoById({ videoId: String(args.videoId), startSeconds: start });
           }
-          this.ensureBox().style.display = 'block';
           break;
         }
         case 'play': p.playVideo(); break;
@@ -229,9 +326,23 @@
     const data = p.getVideoData ? p.getVideoData() : {};
     const list = p.getPlaylist ? (p.getPlaylist() || []) : [];
     const index = p.getPlaylistIndex ? p.getPlaylistIndex() : -1;
+    // Beim Titelwechsel meldet der Player kurz keine Video-ID: aus der Liste nehmen, sonst die letzte bekannte
+    // (sonst zeigen die Kacheln kurz „Keine Wiedergabe“ und die Warteschlange baut sich neu auf)
+    let videoId = (data && data.video_id) || (index >= 0 && list[index]) || '';
+    if (videoId) {
+      const same = this.last && this.last.videoId === videoId;
+      this.last = {
+        videoId,
+        title: (data && data.title) || (same ? this.last.title : ''),
+        author: (data && data.author) || (same ? this.last.author : ''),
+      };
+    } else if (this.last && p.getPlayerState() !== 0) {
+      videoId = this.last.videoId;
+    }
+    const known = this.last && this.last.videoId === videoId ? this.last : {};
     return {
       playerId: this.playerId,
-      videoId: (data && data.video_id) || '',
+      videoId,
       listId: list.length ? this.listId : '',
       state: p.getPlayerState(),
       currentTime: p.getCurrentTime() || 0,
@@ -240,8 +351,8 @@
       muted: p.isMuted(),
       hasPrevious: index > 0,
       hasNext: list.length > 0 && (index < list.length - 1 || !!this.more),
-      title: (data && data.title) || '',
-      author: (data && data.author) || '',
+      title: known.title || '',
+      author: known.author || '',
     };
   };
 
@@ -294,12 +405,16 @@
     const text = (code === 150 || code === 101) && /^(\d{1,3}\.){3}\d{1,3}$|^\[/.test(location.hostname)
       ? t['The video could not be played. Open the visualization via its host name (not an IP address).']
       : (code === 150 || code === 101 ? t['Playback is not allowed for this video in embedded players.'] : 'YouTube error ' + code);
-    this.notice(text || ('YouTube error ' + code));
+    // Symcon-Apps (ohne Hauptfenster): Titel in der YouTube-Music-App öffnen (Android/iOS leiten den Link an die App weiter)
+    const s = this.state();
+    const app = this.liveTiles().length > 0 && this.liveTiles().every(tile => !tile.frame);
+    const link = app && (code === 150 || code === 101) && s && s.videoId ? 'https://music.youtube.com/watch?v=' + s.videoId : '';
+    this.notice(text || ('YouTube error ' + code), link);
     this.toTiles('send', 'Debug', 'player error ' + code);
   };
 
-  Runtime.prototype.notice = function (text) {
-    this.toTiles('notice', text);
+  Runtime.prototype.notice = function (text, link) {
+    this.toTiles('notice', text, link || '');
   };
 
   // Adresse der Kachel-Visu: #/<VisuID>/<KategorieID>…; die Einstiegsseite hat keine Visu-ID
