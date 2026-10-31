@@ -226,6 +226,8 @@ class YouTubeMusicAccount extends IPSModuleStrict
             \YouTubeMusic\AccountFunction::State      => $this->DeviceState((int) ($Data[\YouTubeMusic\Flow::Source] ?? 0), $Params),
             \YouTubeMusic\AccountFunction::Devices    => $this->GetDevices(),
             \YouTubeMusic\AccountFunction::SetRating  => $this->SetRating($Text('VideoId'), $Text('Rating')),
+            // Nur an eigene Geräte im Datenfluss; der Player legt den Token nur in seine Lounge-Sitzung
+            \YouTubeMusic\AccountFunction::LoungeAuth => $this->AccessToken(),
             default                                   => $this->UnknownFunction(),
         };
         $Error = trim((string) ob_get_clean());

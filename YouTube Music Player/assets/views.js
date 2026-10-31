@@ -306,10 +306,47 @@ window.YTMViews = function (api) {
     if (!s.videoId) { body.textContent = ''; status(body, T('Nothing playing')); return; }
     load(body, { kind: 'lyrics', videoId: s.videoId }, data => {
       if (!data.text) { status(body, T('No lyrics for this title')); return; }
-      body.append(text('div', data.text, 'lyrics'), text('small', data.source || '', 'lyrics-src'));
+      if (Array.isArray(data.lines) && data.lines.length) {
+        // Synchroner Liedtext: Zeilen mit Start/Ende, die aktuelle hebt syncLyrics hervor
+        const box = document.createElement('div');
+        box.className = 'lyrics timed';
+        data.lines.forEach(line => {
+          const row = text('div', line.text, 'lyric');
+          row.dataset.start = line.start;
+          row.dataset.end = line.end;
+          box.append(row);
+        });
+        body.append(box);
+      } else {
+        body.append(text('div', data.text, 'lyrics'));
+      }
+      body.append(text('small', data.source || '', 'lyrics-src'));
       body.scrollTop = 0;
+      lyricLine = -1;
     }, quiet);
   }
+
+  // Aktuelle Zeile nach der Abspielposition markieren und mittig halten (nicht, solange der Nutzer selbst scrollt)
+  let lyricLine = -1;
+  let userScroll = 0;
+  function syncLyrics() {
+    const page = stack[stack.length - 1];
+    if (!page || page.main !== 'lyrics') return;
+    const rows = $('vBody').querySelectorAll('.lyric');
+    if (!rows.length) return;
+    const ms = api.position() * 1000;
+    let current = -1;
+    rows.forEach((row, i) => { if (ms >= Number(row.dataset.start)) current = i; });
+    if (current === lyricLine) return;
+    lyricLine = current;
+    rows.forEach((row, i) => {
+      row.classList.toggle('now', i === current);
+      row.classList.toggle('past', i < current);
+    });
+    if (current >= 0 && Date.now() - userScroll > 4000) rows[current].scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+  setInterval(syncLyrics, 250);
+  ['wheel', 'touchmove', 'pointerdown'].forEach(ev => $('vBody').addEventListener(ev, () => { userScroll = Date.now(); }, { passive: true }));
 
   // Titelwechsel: in der Warteschlange nur die Markierung verschieben, wenn der Titel schon in der Liste steht;
   // sonst (und beim Liedtext) leise neu laden, ohne die Anzeige vorher zu leeren

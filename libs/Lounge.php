@@ -166,14 +166,20 @@ namespace YouTubeMusic {
          * @param  array $Session wird aktualisiert (RID)
          * @return array{0: string, 1: array<string, string>}
          */
-        public static function Handshake(array &$Session): array
+        public static function Handshake(array &$Session, array $InitialState = []): array
         {
             $Session['sid'] = '';
             $Session['gsid'] = '';
             $Session['aid'] = 0;
             $Session['ofs'] = 0;
             $Session['rid']++;
-            return [self::BindUrl($Session, ['RID' => (string) $Session['rid']]), ['count' => '0']];
+            $Extra = ['RID' => (string) $Session['rid']];
+            // Wiedergabe gleich beim Verbinden übergeben (wie die Web-App): method=setInitialState, params als JSON
+            if ($InitialState !== []) {
+                $Extra['method'] = 'setInitialState';
+                $Extra['params'] = json_encode(array_map(static fn ($Value): string => (string) $Value, $InitialState), JSON_UNESCAPED_SLASHES);
+            }
+            return [self::BindUrl($Session, $Extra), ['count' => '0']];
         }
 
         /**
@@ -433,21 +439,23 @@ namespace YouTubeMusic {
          */
         private static function BindUrl(array $Session, array $Extra): string
         {
+            // Wie die Web-App von YouTube Music (Mitschnitt 2026-10-31); authuser nur bei angemeldeter Sitzung
             $Query = [
                 'device'        => 'REMOTE_CONTROL',
-                'mdx-version'   => '3',
-                'ui'            => '1',
-                'v'             => '2',
-                'name'          => $Session['name'],
-                'app'           => 'youtube-desktop',
-                'loungeIdToken' => $Session['token'],
                 'id'            => $Session['id'],
-                'VER'           => '8',
-                'CVER'          => '1',
+                'name'          => $Session['name'],
+                'app'           => 'youtube.m-desktop',
+                'mdxVersion'    => '3',
+                'capabilities'  => 'que,mlm',
                 'theme'         => $Session['base'] === self::MusicBase ? 'm' : 'cl',
+                'loungeIdToken' => $Session['token'],
+                'VER'           => '8',
+                'v'             => '2',
+                'CVER'          => '1',
+                'ui'            => '1',
                 'zx'            => bin2hex(random_bytes(6)),
                 't'             => '1',
-            ];
+            ] + (($Session['auth'] ?? '') !== '' ? ['authuser' => '0'] : []);
             return $Session['base'] . self::BindPath . '?' . http_build_query($Extra + $Query);
         }
 

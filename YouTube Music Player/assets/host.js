@@ -159,9 +159,10 @@
   };
 
   Runtime.prototype.place = function () {
-    let t = null;
-    if (this.cfg.hiddenPlayback) t = { left: -10000, top: 0, w: VIDEO_W, h: VIDEO_H, bar: false };
-    else if (this.cfg.videoInTile) t = this.tileSlot();
+    // In der Kachel, wenn eine passende Cover-Fläche sichtbar ist; sonst unsichtbar geparkt („ohne sichtbaren Player“)
+    // oder schwebend
+    let t = this.cfg.videoInTile ? this.tileSlot() : null;
+    if (!t && this.cfg.hiddenPlayback) t = { left: -10000, top: 0, w: VIDEO_W, h: VIDEO_H, bar: false };
     if (!t) { const p = this.floatPos(); t = { left: p.left, top: p.top, w: VIDEO_W, h: VIDEO_H, bar: true }; }
     const key = [t.left, t.top, t.w, t.h].map(Math.round).join(',') + t.bar;
     if (key === this.placed) return;

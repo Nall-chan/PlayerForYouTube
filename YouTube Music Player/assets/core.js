@@ -12,9 +12,13 @@
   const own = cfg.instance;
   // Überschrift der Kachel: Die Visu übergibt in der Adresse margintop (mit Titel 60, ohne 15; live gemessen 9.1)
   // und legt den Titel über die Kachel. Den Inhalt um den Unterschied nach unten rücken.
+  // Ohne Überschrift liegt der Maximieren-Pfeil der Visu oben rechts in der Kachel: Ecke freihalten (--corner)
   try {
     const top = Number(new URLSearchParams(location.search).get('margintop'));
-    if (top > 15) document.documentElement.style.setProperty('--title-space', (top - 15) + 'px');
+    if (top > 15) {
+      document.documentElement.style.setProperty('--title-space', (top - 15) + 'px');
+      document.documentElement.style.setProperty('--corner', '0px');
+    }
   } catch (e) { /* ohne Angabe: kein Titel */ }
   const isTileDevice = cfg.deviceType === 0;
   let state = cfg.state || {};          // Zustand des eigenen Geräts
@@ -129,7 +133,8 @@
       frame: host === window ? null : window.frameElement,
       // Cover-Fläche für das Video (Einstellung „Video anzeigen: in der Kachel“); nur beim eigenen Gerät und sichtbarem Cover
       slot: () => {
-        if (selected !== own) return null;
+        // Nicht über eine offene Ebene der Kachel legen (Geräteliste)
+        if (selected !== own || !$('devices').hidden) return null;
         const r = $('art').getBoundingClientRect();
         return r.width && r.height ? r : null;
       },
@@ -455,6 +460,7 @@
     T, icon, action, parseLink,
     play: args => command('setPlaylist', args),
     current: () => current().s,
+    position: () => position(current()),
     storageKey: 'ytm-view-' + own,
   });
 

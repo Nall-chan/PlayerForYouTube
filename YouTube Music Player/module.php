@@ -92,6 +92,11 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     private const AnnounceTimer = 'Announce';
 
     /**
+     * Einmal-Timer (und RequestAction-Ident): nach Übernehmen bzw. Start still neu mit der Lounge verbinden
+     */
+    private const ResumeTimer = 'ResumeLounge';
+
+    /**
      * Formularfelder, die nur bei Ausgabe auf Chrome Cast gelten
      */
     private const CastFormFields = [\YouTubeMusic\Property::CastInstance, \YouTubeMusic\Property::EnableVariables, 'VariablesHint'];
@@ -137,7 +142,8 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         parent::Create();
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::DeviceType, \YouTubeMusic\DeviceType::ChromeCast);
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::CastInstance, 0);
-        $this->RegisterPropertyString(\YouTubeMusic\Property::PlayerName, 'Symcon');
+        // Leer: Name dieser Instanz
+        $this->RegisterPropertyString(\YouTubeMusic\Property::PlayerName, '');
         $this->RegisterPropertyBoolean(\YouTubeMusic\Property::HiddenPlayback, false);
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::VideoDisplay, \YouTubeMusic\VideoDisplay::Floating);
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::EnableVariables, \YouTubeMusic\EnableVariables::Auto);
@@ -185,6 +191,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         // Beim Account anmelden (Typ und Zustand für die Geräteauswahl der anderen Kacheln)
         if (IPS_GetKernelRunlevel() === KR_READY) {
             $this->PushDeviceState();
+            $this->ScheduleResume();
         }
     }
 
@@ -203,6 +210,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     {
         if ($Message === IPS_KERNELSTARTED && $this->HasAccount()) {
             $this->PushDeviceState();
+            $this->ScheduleResume();
         }
     }
 
@@ -323,6 +331,9 @@ class YouTubeMusicPlayer extends IPSModuleStrict
                 return;
             case self::AnnounceTimer:
                 $this->PushDeviceState();
+                return;
+            case self::ResumeTimer:
+                $this->ResumeLounge();
                 return;
             case 'FormControlMode':
                 $this->UpdateFormField(\YouTubeMusic\Property::ControlDevices, 'visible', (int) $Value === \YouTubeMusic\ControlMode::Selected);
@@ -1515,6 +1526,42 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     }
 
     /**
+     * Stilles Wiederverbinden zeitversetzt anstoßen (ApplyChanges soll nicht auf das Gerät warten).
+     *
+     * @return void
+     */
+    private function ScheduleResume(): void
+    {
+        if ($this->IsCast() && $this->CastInstance() !== 0) {
+            $this->RegisterOnceTimer(self::ResumeTimer, 'IPS_RequestAction($_IPS[\'TARGET\'], \'' . self::ResumeTimer . '\', true);');
+        }
+    }
+
+    /**
+     * Nach Übernehmen bzw. Start von Symcon die Lounge-Sitzung wieder aufnehmen, wenn am Gerät YouTube Music läuft
+     * (Wiedergabe läuft dort weiter, das Modul hat seine Sitzung verloren). Startet nie eine App;
+     * gelesen wird nur die Statusvariable der Chrome-Cast-Instanz. Fehler nur ins Debug.
+     *
+     * @return void
+     */
+    private function ResumeLounge(): void
+    {
+        $Cast = $this->CastInstance();
+        $Session = is_array($this->LoungeSession) ? $this->LoungeSession : [];
+        if ($Cast === 0 || ($Session['sid'] ?? '') !== '') {
+            return;
+        }
+        $AppVariable = @IPS_GetObjectIDByIdent(\YouTubeMusic\ChromeCast::AppIdIdent, $Cast);
+        if ($AppVariable === false || GetValueString($AppVariable) !== \YouTubeMusic\ChromeCast::YouTubeMusicApp) {
+            return;
+        }
+        ob_start();
+        $Ok = $this->ConnectLounge();
+        $Error = trim((string) ob_get_clean());
+        $this->SendDebug(__FUNCTION__, $Ok ? 'resumed' : 'failed ' . $Error, 0);
+    }
+
+    /**
      * Screen-ID der laufenden YouTube-Music-App am Gerät (CCast startet die App, falls sie nicht läuft).
      *
      * @return string|false
@@ -1544,7 +1591,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
      * @param  string $ScreenId bereits ermittelte Screen-ID (leer: bei CCast abfragen)
      * @return bool
      */
-    private function ConnectLounge(string $ScreenId = ''): bool
+    private function ConnectLounge(string $ScreenId = '', array $InitialState = []): bool
     {
         $DeviceID = $this->CastInstance();
         if ($ScreenId === '') {
@@ -1553,23 +1600,42 @@ class YouTubeMusicPlayer extends IPSModuleStrict
                 return false;
             }
         }
-        $Headers = $this->LoungeHeaders();
+        // Versuch (2026-10-31): Lounge-Sitzung mit dem Konto anmelden, damit das Gerät mit dem Konto spielt (ohne Werbung).
+        // Die Web-App meldet sich per Cookies an; wir mit dem Access-Token des Accounts. Ohne Erfolg anonym wie bisher.
+        $Auth = '';
+        if ($this->HasAccount()) {
+            ob_start();
+            $Token = $this->SendToAccount(\YouTubeMusic\AccountFunction::LoungeAuth, []);
+            ob_end_clean();
+            $Auth = is_string($Token) ? $Token : '';
+        }
+        $Headers = $this->LoungeHeaders($Auth);
         [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\Lounge::MusicBase . \YouTubeMusic\Lounge::TokenPath, \YouTubeMusic\Lounge::TokenRequest([$ScreenId]), $Headers);
         $Tokens = \YouTubeMusic\Lounge::ParseTokens($HttpCode, $Body);
-        $this->SendDebug(__FUNCTION__, 'device ' . $DeviceID . ', screen ' . substr($ScreenId, 0, 6) . '…, token HTTP ' . $HttpCode . ' ' . $CurlError . ', ' . count($Tokens) . ' token(s)', 0);
+        if (count($Tokens) === 0 && $Auth !== '') {
+            $this->SendDebug(__FUNCTION__, 'signed-in token request failed (HTTP ' . $HttpCode . '), anonymous', 0);
+            $Auth = '';
+            $Headers = $this->LoungeHeaders();
+            [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\Lounge::MusicBase . \YouTubeMusic\Lounge::TokenPath, \YouTubeMusic\Lounge::TokenRequest([$ScreenId]), $Headers);
+            $Tokens = \YouTubeMusic\Lounge::ParseTokens($HttpCode, $Body);
+        }
+        $this->SendDebug(__FUNCTION__, 'device ' . $DeviceID . ', screen ' . substr($ScreenId, 0, 6) . '…, token HTTP ' . $HttpCode . ' ' . $CurlError . ', ' . count($Tokens) . ' token(s), ' . ($Auth !== '' ? 'signed in' : 'anonymous'), 0);
         if (count($Tokens) === 0) {
             echo $this->Translate('Could not get a YouTube Lounge token') . PHP_EOL;
             return false;
         }
-        $Name = mb_substr(trim($this->ReadPropertyString(\YouTubeMusic\Property::PlayerName)) ?: 'Symcon', 0, 40);
+        // Name der Fernbedienung auf dem Gerät („… connected“): eigener Name, sonst der Name dieser Instanz (nur Anzeige)
+        $Name = mb_substr(trim($this->ReadPropertyString(\YouTubeMusic\Property::PlayerName)) ?: (trim(IPS_GetName($this->InstanceID)) ?: 'Symcon'), 0, 40);
         $Session = \YouTubeMusic\Lounge::NewSession($Tokens[0]['loungeToken'], $Name);
         // Zum Erkennen eines App-Neustarts am Gerät (neue Screen-ID, alte Sitzung läuft ins Leere)
         $Session['screenId'] = $ScreenId;
-        [$Url, $Post] = \YouTubeMusic\Lounge::Handshake($Session);
+        $Session['auth'] = $Auth;
+        [$Url, $Post] = \YouTubeMusic\Lounge::Handshake($Session, $InitialState);
         [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', $Url, $Post, $Headers);
         $Events = \YouTubeMusic\Lounge::ParseChunks($Body);
         \YouTubeMusic\Lounge::ApplySession($Session, $Events);
         $this->SendDebug(__FUNCTION__, 'handshake HTTP ' . $HttpCode . ' ' . $CurlError . ', ' . count($Events) . ' events, SID ' . ($Session['sid'] !== '' ? 'ok' : 'missing'), 0);
+        $this->DebugLoungeDevices($Events);
         if ($Session['sid'] === '') {
             echo $this->Translate('YouTube Lounge connection failed') . PHP_EOL;
             return false;
@@ -1616,6 +1682,16 @@ class YouTubeMusicPlayer extends IPSModuleStrict
                 $Connected = false;
             }
         }
+        // Ohne Verbindung wie die Web-App: neue Sitzung, Wiedergabe gleich beim Verbinden (setInitialState); so spielt ein
+        // Gerät, das nicht selbst angemeldet ist, mit dem Konto (TV Wohnzimmer). In einer bestehenden Sitzung übernimmt
+        // das Gerät setInitialState nicht (und meldet jedes Mal ein neues Gerät): dort setPlaylist (Nutzer, 2026-10-31)
+        if (!$Connected && $Command === \YouTubeMusic\LoungeCommand::SetPlaylist && ($Arguments['videoId'] ?? '') !== '') {
+            $Initial = ['videoId' => $Arguments['videoId'], 'currentTime' => $Arguments['currentTime'] ?? 0, 'currentIndex' => 0];
+            if (($Arguments['listId'] ?? '') !== '') {
+                $Initial['listId'] = $Arguments['listId'];
+            }
+            return $this->ConnectLounge($ScreenId, $Initial);
+        }
         if (!$Connected && !$this->ConnectLounge($ScreenId)) {
             return false;
         }
@@ -1627,8 +1703,8 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             [$Url, $Post] = \YouTubeMusic\Lounge::Command($Session, $Command, $Arguments);
             $this->LoungeSession = $Session;
             $this->unlock(self::LockLounge);
-            [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', $Url, $Post, $this->LoungeHeaders());
-            $this->SendDebug(__FUNCTION__, $Command . ' ' . json_encode($Arguments) . ' → HTTP ' . $HttpCode . ' ' . $CurlError, 0);
+            [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', $Url, $Post, $this->LoungeHeaders((string) ($Session['auth'] ?? '')));
+            $this->SendDebug(__FUNCTION__, $Command . ' ' . json_encode(array_diff_key($Arguments, ['videoIds' => 0, 'more' => 0])) . ' → HTTP ' . $HttpCode . ' ' . $CurlError, 0);
             if ($HttpCode === 200 && !str_contains($Body, 'loungeScreenDisconnected')) {
                 // Ereignisse zum Befehl zeitnah abholen
                 $this->SetTimerInterval(\YouTubeMusic\Timer::LoungePoll, 200);
@@ -1659,7 +1735,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             $this->SetTimerInterval(\YouTubeMusic\Timer::LoungePoll, 0);
             return;
         }
-        [$HttpCode, $Body, $CurlError] = $this->HttpRequest('GET', \YouTubeMusic\Lounge::Poll($Session), null, $this->LoungeHeaders(), 10, self::LoungePollDuration);
+        [$HttpCode, $Body, $CurlError] = $this->HttpRequest('GET', \YouTubeMusic\Lounge::Poll($Session), null, $this->LoungeHeaders((string) ($Session['auth'] ?? '')), 10, self::LoungePollDuration);
         if (\YouTubeMusic\Lounge::SessionExpired($HttpCode, $Body) || $CurlError !== '') {
             $this->SendDebug(__FUNCTION__, 'session ended: HTTP ' . $HttpCode . ' ' . $CurlError, 0);
             $this->StopLounge();
@@ -1787,9 +1863,34 @@ class YouTubeMusicPlayer extends IPSModuleStrict
      *
      * @return list<string>
      */
-    private function LoungeHeaders(): array
+    private function LoungeHeaders(string $Auth = ''): array
     {
-        return ['Origin: https://www.youtube.com', 'User-Agent: ' . self::UserAgent];
+        $Headers = ['Origin: https://www.youtube.com', 'User-Agent: ' . self::UserAgent];
+        if ($Auth !== '') {
+            $Headers[] = 'Authorization: Bearer ' . $Auth;
+        }
+        return $Headers;
+    }
+
+    /**
+     * Geräte der Lounge-Sitzung ins Debug (Typ, App, Name, ob mit Konto); ohne Kennungen und Token.
+     *
+     * @param  array $Events
+     * @return void
+     */
+    private function DebugLoungeDevices(array $Events): void
+    {
+        foreach ($Events as [$Index, $Name, $Data]) {
+            if ($Name !== 'loungeStatus') {
+                continue;
+            }
+            $Devices = json_decode((string) ($Data['devices'] ?? '[]'), true);
+            foreach (is_array($Devices) ? $Devices : [] as $Device) {
+                $Keys = array_keys($Device);
+                $this->SendDebug('LoungeDevice', ($Device['type'] ?? '?') . ' / ' . ($Device['app'] ?? '?') . ' / ' . ($Device['name'] ?? '?')
+                    . ' / user: ' . (isset($Device['user']) || isset($Device['userAvatarUri']) ? 'yes' : 'no') . ' / keys: ' . implode(',', $Keys), 0);
+            }
+        }
     }
 
     /**

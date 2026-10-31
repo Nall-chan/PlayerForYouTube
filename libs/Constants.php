@@ -17,6 +17,15 @@ namespace YouTubeMusic {
     /**
      * GUIDs der Module
      */
+    /**
+     * Chrome Cast (Library CCast): Ident der Statusvariable mit der laufenden App und App-ID von YouTube Music
+     */
+    class ChromeCast
+    {
+        public const AppIdIdent = 'appId';
+        public const YouTubeMusicApp = '2DB7CC49';
+    }
+
     class GUID
     {
         public const Player = '{432AD6E7-A9AC-44D5-A26E-962C77035C9D}';
@@ -142,6 +151,10 @@ namespace YouTubeMusic {
     class AccountFunction
     {
         public const Search = 'Search';
+        /**
+         * Gültiger Access-Token des Kontos für eine angemeldete Lounge-Sitzung (leer ohne Anmeldung); nie protokollieren
+         */
+        public const LoungeAuth = 'LoungeAuth';
         public const Browse = 'Browse';
         public const BrowseMore = 'BrowseMore';
         public const GetQueue = 'GetQueue';

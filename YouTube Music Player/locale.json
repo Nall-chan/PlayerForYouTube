@@ -5,7 +5,7 @@
             "Tile (playback in the browser of the visualization)": "Kachel (Wiedergabe im Browser der Visualisierung)",
             "Chrome Cast (YouTube Music app)": "Chrome Cast (YouTube-Music-App)",
             "Chrome Cast instance": "Chrome-Cast-Instanz",
-            "Name of this player on the device": "Name dieses Players auf dem Gerät",
+            "Name of this player on the device (empty: name of this instance)": "Name dieses Players auf dem Gerät (leer: Name dieser Instanz)",
             "Status variables": "Statusvariablen",
             "On": "An",
             "Off": "Aus",

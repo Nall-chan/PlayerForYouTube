@@ -29,8 +29,8 @@
         {
             "type": "ValidationTextBox",
             "name": "PlayerName",
-            "caption": "Name of this player on the device",
-            "width": "400px"
+            "caption": "Name of this player on the device (empty: name of this instance)",
+            "width": "520px"
         },
         {
             "type": "Select",

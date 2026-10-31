@@ -9,6 +9,8 @@
   --surface: color-mix(in srgb, var(--text) 8%, transparent);
   --line: color-mix(in srgb, var(--text) 20%, transparent);
   --radius: 12px;
+  /* Platz für den Maximieren-Pfeil oben rechts (0, wenn die Kachel eine Überschrift hat; core.js) */
+  --corner: 34px;
 }
 html, body { margin: 0; height: 100%; overflow: hidden; }
 /* Platz für die Überschrift der Kachel (--title-space setzt core.js aus margintop der Visu) */
@@ -19,9 +21,10 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 * { scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
 svg { width: 1em; height: 1em; fill: currentColor; display: block; }
 .app { position: relative; box-sizing: border-box; height: 100%; overflow: hidden; container: app / size; }
-.icon-btn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; font-size: 22px; flex: none; }
+/* Größen an die Mediensteuerung der Kachel-Visu angelehnt (Play deutlich größer als Zurück/Weiter) */
+.icon-btn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; font-size: 28px; flex: none; }
 .icon-btn:hover { background: var(--surface); }
-.icon-btn.big { width: 56px; height: 56px; font-size: 34px; }
+.icon-btn.big { width: 60px; height: 60px; font-size: 44px; }
 .primary { background: var(--accent); color: #fff; border-radius: 8px; padding: 0 14px; display: grid; place-items: center; }
 
 /* Fortschritt und Lautstärke: gefüllter Teil über --fill (core.js) */
@@ -43,10 +46,11 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 .title { font-weight: 600; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sub { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .like.on { color: var(--accent); }
+.like, .tools .icon-btn { width: 36px; height: 36px; font-size: 22px; }
 .times { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; margin-top: 6px; }
 .controls { display: flex; align-items: center; justify-content: center; gap: 18px; }
 .volume { display: flex; align-items: center; gap: 10px; }
-.vol-icon { color: var(--muted); font-size: 18px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; flex: none; }
+.vol-icon { color: var(--muted); font-size: 24px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; flex: none; }
 .vol-icon:hover { background: var(--surface); }
 .muted .vol-icon { color: var(--accent); }
 .muted #volume { opacity: .45; }
@@ -81,7 +85,8 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 .size-mini .meta { flex: 1; min-width: 0; }
 .size-mini .title { font-size: 15px; }
 .size-mini .controls { gap: 2px; }
-.size-mini .icon-btn.big { width: 44px; height: 44px; font-size: 26px; }
+.size-mini .icon-btn { width: 38px; height: 38px; font-size: 24px; }
+.size-mini .icon-btn.big { width: 48px; height: 48px; font-size: 36px; }
 .size-mini .volume { width: 120px; flex: none; }
 .size-mini.narrow .volume { display: none; }
 /* Ganz klein: ohne Cover, Titel und Interpret über den Knöpfen */
@@ -93,11 +98,14 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 
 /* Kompakt: Cover links, Steuerung rechts */
 .size-compact .player { padding: 14px; gap: 18px; }
+/* Maximieren-Pfeil: Like rechts oben und hochkant das Cover nicht in die Ecke legen */
+.size-compact .meta { padding-right: calc(var(--corner) - 8px); }
+.size-mini .player { padding-right: var(--corner); }
 .size-compact .info { max-width: 560px; }
 .size-compact .art { height: min(100cqh - 28px, 50cqw); width: auto; }
 /* Kompakt hochkant: Cover oben, Steuerung darunter */
 @container app (max-aspect-ratio: 1/1) {
-  .size-compact .player { flex-direction: column; align-items: center; }
+  .size-compact .player { flex-direction: column; align-items: center; padding-top: max(14px, var(--corner)); }
   .size-compact .art { flex: 1 1 0; min-height: 0; width: auto; height: auto; max-width: 100%; }
   .size-compact .info { flex: none; width: 100%; }
 }
@@ -178,6 +186,11 @@ input[type=range]::-moz-range-thumb { width: 14px; height: 14px; border-radius: 
 /* Liedtext */
 .lyrics { white-space: pre-line; font-size: 18px; line-height: 1.6; font-weight: 600; max-width: 720px; }
 .lyrics-src { display: block; color: var(--muted); margin-top: 16px; }
+/* Synchroner Liedtext: gesungene Zeile hervorgehoben */
+.lyrics.timed { white-space: normal; padding: 30vh 0; }
+.lyric { padding: 4px 0; color: var(--muted); transition: color .3s, transform .3s; transform-origin: left center; }
+.lyric.past { color: color-mix(in srgb, var(--text) 45%, transparent); }
+.lyric.now { color: var(--text); transform: scale(1.06); }
 .size-full .mini { display: flex; position: absolute; left: 12px; right: 12px; bottom: 10px; height: 56px; align-items: center; gap: 10px; padding: 0 8px;
   border-radius: 14px; background: color-mix(in srgb, var(--card-color, #fff) 82%, var(--text) 8%); box-shadow: 0 4px 18px #0003; cursor: pointer; }
 .mini-art { flex: none; width: 42px; height: 42px; border-radius: 8px; background: var(--surface) center / cover no-repeat; }
