@@ -168,6 +168,53 @@ namespace YouTubeMusic {
     }
 
     /**
+     * Anmeldung über den OAuth-Dienst von Symcon (Client und Secret liegen beim Dienst)
+     *
+     * Der Bezeichner muss beim Symcon-Dienst registriert sein (https://www.symcon.de/kontakt/#OAuth).
+     * Solange er leer ist, bietet das Modul die Anmeldung nicht an.
+     * Beispiel: https://github.com/symcon/SymconTest/blob/master/OAuthTestStrict/module.php
+     */
+    class SymconOAuth
+    {
+        /**
+         * Registrierter Bezeichner (Testsystem: test_staging)
+         */
+        public const Identifier = '';
+        public const Server = 'oauth.ipmagic.de';
+
+        /**
+         * Ist die Anmeldung über Symcon eingerichtet?
+         *
+         * @return bool
+         */
+        public static function Available(): bool
+        {
+            return self::Identifier !== '';
+        }
+
+        /**
+         * Adresse, die im Browser die Anmeldung bei Google startet.
+         *
+         * @param  string $Licensee Lizenznutzer (IPS_GetLicensee)
+         * @return string
+         */
+        public static function AuthorizeUrl(string $Licensee): string
+        {
+            return 'https://' . self::Server . '/authorize/' . self::Identifier . '?username=' . urlencode($Licensee);
+        }
+
+        /**
+         * Adresse für den Tausch von Code bzw. Refresh-Token gegen Access-Token.
+         *
+         * @return string
+         */
+        public static function TokenUrl(): string
+        {
+            return 'https://' . self::Server . '/access_token/' . self::Identifier;
+        }
+    }
+
+    /**
      * Schlanker HTTP-Client (cURL), ohne Symcon-Abhängigkeit
      */
     class Http

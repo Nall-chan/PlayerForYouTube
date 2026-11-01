@@ -205,6 +205,10 @@ namespace YouTubeMusic {
          */
         public const SignInExpired = 'SignInExpired';
         /**
+         * Art der Anmeldung (siehe AuthMethod); leer = alte Anmeldung per Device Flow
+         */
+        public const AuthMethod = 'AuthMethod';
+        /**
          * Schlüssel für den WebHook der Kachel-Laufzeit
          */
         public const HookSecret = 'HookSecret';
@@ -218,6 +222,15 @@ namespace YouTubeMusic {
         public const DevicePoll = 'DevicePoll';
         public const RefreshToken = 'RefreshToken';
         public const LoungePoll = 'LoungePoll';
+    }
+
+    /**
+     * Art der Anmeldung (Attribut AuthMethod)
+     */
+    class AuthMethod
+    {
+        public const DeviceFlow = '';
+        public const Symcon = 'symcon';
     }
 
     /**

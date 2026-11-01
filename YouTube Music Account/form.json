@@ -32,6 +32,13 @@
         },
         {
             "type": "Button",
+            "name": "LoginSymcon",
+            "caption": "Sign in with Google via Symcon",
+            "visible": false,
+            "onClick": "echo YTM_StartSymconLogin($id);"
+        },
+        {
+            "type": "Button",
             "name": "Login",
             "caption": "Sign in with Google",
             "onClick": "echo YTM_StartLogin($id);"
