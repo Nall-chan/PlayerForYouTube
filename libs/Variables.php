@@ -56,8 +56,8 @@ namespace YouTubeMusic {
         {
             return match ($LoungeState) {
                 LoungeState::Playing, LoungeState::Buffering => self::Play,
-                LoungeState::Paused => self::Pause,
-                default             => self::Stop,
+                LoungeState::Paused                          => self::Pause,
+                default                                      => self::Stop,
             };
         }
     }
