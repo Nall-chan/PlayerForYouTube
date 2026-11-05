@@ -55,7 +55,7 @@ namespace YouTubeMusic {
         {
             $Host = (string) parse_url($Url, PHP_URL_HOST);
             $Path = (string) parse_url($Url, PHP_URL_PATH);
-            if ($Host === 'oauth2.googleapis.com') {
+            if ($Host === 'oauth2.googleapis.com' || $Host === 'oauth.ipmagic.de') {
                 return RequestCategory::OAuth;
             }
             if (($Host === 'www.googleapis.com' || $Host === 'youtube.googleapis.com') && str_starts_with($Path, '/youtube/v3/')) {

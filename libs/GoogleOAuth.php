@@ -177,10 +177,14 @@ namespace YouTubeMusic {
     class SymconOAuth
     {
         /**
-         * Registrierter Bezeichner (Testsystem: test_staging)
+         * Registrierter Bezeichner
          */
-        public const Identifier = '';
+        public const Identifier = 'google_youtube';
         public const Server = 'oauth.ipmagic.de';
+        /**
+         * So lange nach dem Klick auf den Button nimmt die Instanz den Rückruf an (Sekunden)
+         */
+        public const LoginWindow = 600;
 
         /**
          * Ist die Anmeldung über Symcon eingerichtet?

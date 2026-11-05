@@ -1,29 +1,5 @@
 {
-    "elements": [
-        {
-            "type": "ExpansionPanel",
-            "caption": "Google Cloud project",
-            "expanded": true,
-            "items": [
-                {
-                    "type": "Label",
-                    "caption": "OAuth client of type \"TVs and Limited Input devices\" with the YouTube Data API v3 enabled."
-                },
-                {
-                    "type": "ValidationTextBox",
-                    "name": "ClientId",
-                    "caption": "Client ID",
-                    "width": "600px"
-                },
-                {
-                    "type": "PasswordTextBox",
-                    "name": "ClientSecret",
-                    "caption": "Client secret",
-                    "width": "600px"
-                }
-            ]
-        }
-    ],
+    "elements": [],
     "actions": [
         {
             "type": "Label",
@@ -31,17 +7,57 @@
             "caption": ""
         },
         {
+            "type": "Label",
+            "name": "LoginSymconHint",
+            "caption": "Signing in with Google needs an active Symcon Connect. Without it, use your own Google Cloud project.",
+            "bold": true,
+            "color": 16711680,
+            "visible": false
+        },
+        {
             "type": "Button",
             "name": "LoginSymcon",
-            "caption": "Sign in with Google via Symcon",
+            "caption": "Sign in with Google",
             "visible": false,
             "onClick": "echo YTM_StartSymconLogin($id);"
         },
         {
             "type": "Button",
             "name": "Login",
-            "caption": "Sign in with Google",
-            "onClick": "echo YTM_StartLogin($id);"
+            "caption": "Sign in with your own Google Cloud project…",
+            "onClick": "IPS_RequestAction($id, 'OpenOwnProject', true);"
+        },
+        {
+            "type": "PopupAlert",
+            "name": "OwnProjectPopup",
+            "visible": false,
+            "popup": {
+                "caption": "Own Google Cloud project",
+                "closeCaption": "Close",
+                "items": [
+                    {
+                        "type": "Label",
+                        "caption": "OAuth client of type \"TVs and Limited Input devices\" with the YouTube Data API v3 enabled."
+                    },
+                    {
+                        "type": "ValidationTextBox",
+                        "name": "ClientId",
+                        "caption": "Client ID",
+                        "width": "600px"
+                    },
+                    {
+                        "type": "PasswordTextBox",
+                        "name": "ClientSecret",
+                        "caption": "Client secret",
+                        "width": "600px"
+                    },
+                    {
+                        "type": "Button",
+                        "caption": "Sign in with Google",
+                        "onClick": "echo YTM_StartLogin($id, $ClientId, $ClientSecret);"
+                    }
+                ]
+            }
         },
         {
             "type": "PopupAlert",

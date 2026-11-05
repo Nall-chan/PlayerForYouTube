@@ -29,7 +29,8 @@ require_once dirname(__DIR__) . '/libs/RequestCounter.php';
  * @property string $DeviceCode Gerätecode der laufenden Anmeldung
  * @property int $DeviceInterval Abfrageintervall der laufenden Anmeldung in Sekunden
  * @property int $DeviceExpires Ablaufzeit des Gerätecodes (Unix-Zeit)
- * @property array $MusicConfig Client-Version, Besucherkennung und Abrufzeit für den Music-Client
+ * @property int $OAuthPending Zeitpunkt (Unix-Zeit), bis zu dem der Rückruf der Anmeldung über Symcon angenommen wird
+ * @property array $MusicConfigClient-Version, Besucherkennung und Abrufzeit für den Music-Client
  * @property array $RequestStats Anfragen des Tages je Kategorie (siehe \YouTubeMusic\RequestCounter)
  * @property array $DeviceStates Letzter gemeldeter Zustand je Geräte-Instanz (Instanz-ID => Zustand)
  * @method bool SendDebug(string $Message, mixed $Data, int $Format)
@@ -90,9 +91,8 @@ class YouTubeMusicAccount extends IPSModuleStrict
     {
         //Never delete this line!
         parent::Create();
-        $this->RegisterPropertyString(\YouTubeMusic\Property::ClientId, '');
-        $this->RegisterPropertyString(\YouTubeMusic\Property::ClientSecret, '');
-
+        $this->RegisterAttributeString(\YouTubeMusic\Attribute::ClientId, '');
+        $this->RegisterAttributeString(\YouTubeMusic\Attribute::ClientSecret, '');
         $this->RegisterAttributeString(\YouTubeMusic\Attribute::RefreshToken, '');
         $this->RegisterAttributeString(\YouTubeMusic\Attribute::AccessToken, '');
         $this->RegisterAttributeInteger(\YouTubeMusic\Attribute::AccessExpiry, 0);
@@ -101,10 +101,6 @@ class YouTubeMusicAccount extends IPSModuleStrict
         $this->RegisterAttributeString(\YouTubeMusic\Attribute::RequestStats, '[]');
         $this->RegisterAttributeBoolean(\YouTubeMusic\Attribute::SignInExpired, false);
         $this->RegisterAttributeString(\YouTubeMusic\Attribute::AuthMethod, \YouTubeMusic\AuthMethod::DeviceFlow);
-
-        if (\YouTubeMusic\SymconOAuth::Available()) {
-            $this->RegisterOAuth(\YouTubeMusic\SymconOAuth::Identifier);
-        }
 
         $this->RegisterTimer(\YouTubeMusic\Timer::DevicePoll, 0, 'IPS_RequestAction($_IPS[\'TARGET\'], \'' . \YouTubeMusic\TimerAction::DevicePoll . '\', true);');
         $this->RegisterTimer(\YouTubeMusic\Timer::RefreshToken, 0, 'IPS_RequestAction($_IPS[\'TARGET\'], \'' . \YouTubeMusic\TimerAction::RefreshToken . '\', true);');
@@ -144,6 +140,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
     {
         $Form = json_decode((string) file_get_contents(__DIR__ . '/form.json'), true);
         $SignedIn = $this->SignedIn();
+        $SymconLogin = \YouTubeMusic\SymconOAuth::Available() && $this->ConnectActive();
         // Kanal fehlt (z. B. API im Projekt noch nicht aktiviert): beim Öffnen erneut versuchen
         if ($SignedIn && $this->ReadAttributeString(\YouTubeMusic\Attribute::ChannelId) === '') {
             ob_start();
@@ -162,10 +159,15 @@ class YouTubeMusicAccount extends IPSModuleStrict
                     break;
                 case 'LoginSymcon':
                     $Action['visible'] = !$SignedIn && \YouTubeMusic\SymconOAuth::Available();
+                    $Action['enabled'] = $SymconLogin;
+                    break;
+                case 'LoginSymconHint':
+                    $Action['visible'] = !$SignedIn && \YouTubeMusic\SymconOAuth::Available() && !$SymconLogin;
                     break;
                 case 'Login':
                     $Action['visible'] = !$SignedIn;
                     break;
+                case 'OwnProjectPopup':
                 case 'LoginPopup':
                     // closeCaption übersetzt Symcon nicht selbst
                     $Action['popup']['closeCaption'] = $this->Translate('Close');
@@ -176,7 +178,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
                 case 'Requests':
                     $Stats = $this->GetRequestStatistics();
                     $Action['caption'] = sprintf($this->Translate('Requests today (%s, Pacific Time)'), $Stats['day']);
-                    $Action['items'][0]['caption'] = sprintf($this->Translate('YouTube Data API quota: %d of %d units used'), $Stats['units'], $Stats['quota']);
+                    $Action['items'][0]['caption'] = sprintf($this->Translate('YouTube Data API quota: %d of %d units used (this installation only)'), $Stats['units'], $Stats['quota']);
                     $Action['items'][1]['values'] = $this->RequestRows($Stats);
                     break;
             }
@@ -197,6 +199,9 @@ class YouTubeMusicAccount extends IPSModuleStrict
     public function RequestAction(string $Ident, mixed $Value): void
     {
         switch ($Ident) {
+            case \YouTubeMusic\FormAction::OpenOwnProject:
+                $this->UpdateFormField('OwnProjectPopup', 'visible', true);
+                return;
             case \YouTubeMusic\TimerAction::DevicePoll:
                 $this->PollDeviceToken();
                 return;
@@ -243,17 +248,22 @@ class YouTubeMusicAccount extends IPSModuleStrict
     }
 
     /**
-     * Startet die Anmeldung bei Google (Device Flow).
+     * Startet die Anmeldung mit dem eigenen Google-Cloud-Projekt (Device Flow).
      *
-     * Liefert die Adresse der Google-Anmeldeseite; das Formular öffnet sie (echo im onClick)
-     * und zeigt den Code im Popup LoginPopup. Danach fragt der Timer DevicePoll das Token ab.
+     * Client-ID und Clientschlüssel kommen aus dem Popup OwnProjectPopup und werden erst nach dem
+     * erfolgreichen Start als Attribute gespeichert. Liefert die Adresse der Google-Anmeldeseite;
+     * das Formular öffnet sie (echo im onClick) und zeigt den Code im Popup LoginPopup.
+     * Danach fragt der Timer DevicePoll das Token ab.
      *
+     * @param  string $ClientId Client-ID des Cloud-Projekts
+     * @param  string $ClientSecret Clientschlüssel des Cloud-Projekts
      * @return string|false
      */
-    public function StartLogin(): string|false
+    public function StartLogin(string $ClientId, string $ClientSecret): string|false
     {
-        $ClientId = trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientId));
-        if ($ClientId === '' || trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientSecret)) === '') {
+        $ClientId = trim($ClientId);
+        $ClientSecret = trim($ClientSecret);
+        if ($ClientId === '' || $ClientSecret === '') {
             echo $this->Translate('Client ID or client secret is missing') . PHP_EOL;
             return false;
         }
@@ -264,12 +274,17 @@ class YouTubeMusicAccount extends IPSModuleStrict
             echo $this->Translate('Sign-in failed') . ': ' . ($CurlError !== '' ? $CurlError : $Result['error']) . PHP_EOL;
             return false;
         }
+        // Eine begonnene Anmeldung über Symcon ist damit abgebrochen
+        $this->OAuthPending = 0;
+        $this->WriteAttributeString(\YouTubeMusic\Attribute::ClientId, $ClientId);
+        $this->WriteAttributeString(\YouTubeMusic\Attribute::ClientSecret, $ClientSecret);
         $this->DeviceCode = $Result['device_code'];
         $this->DeviceInterval = $Result['interval'];
         $this->DeviceExpires = time() + $Result['expires_in'];
         $this->SetTimerInterval(\YouTubeMusic\Timer::DevicePoll, $Result['interval'] * 1000);
         $this->SendDebug(__FUNCTION__, 'user_code ' . $Result['user_code'] . ', interval ' . $Result['interval'] . ' s, expires in ' . $Result['expires_in'] . ' s', 0);
         $this->UpdateFormField('UserCode', 'value', $Result['user_code']);
+        $this->UpdateFormField('OwnProjectPopup', 'visible', false);
         $this->UpdateFormField('LoginPopup', 'visible', true);
         return $Result['verification_url'];
     }
@@ -288,6 +303,18 @@ class YouTubeMusicAccount extends IPSModuleStrict
             echo $this->Translate('Sign-in via Symcon is not available yet') . PHP_EOL;
             return false;
         }
+        // Der Dienst leitet den Rückruf an die ipmagic-Adresse dieses Systems weiter (Symcon Connect)
+        if (!$this->ConnectActive()) {
+            echo $this->Translate('Symcon Connect is not active. Sign in with your own Google Cloud project instead.') . PHP_EOL;
+            return false;
+        }
+        // Der OAuth-Endpunkt kennt pro Bezeichner nur eine Instanz (die zuletzt registrierte):
+        // erst beim Klick eintragen, damit der Rückruf bei dieser Instanz ankommt
+        $this->RegisterOAuth(\YouTubeMusic\SymconOAuth::Identifier);
+        $this->OAuthPending = time() + \YouTubeMusic\SymconOAuth::LoginWindow;
+        // Eine laufende Anmeldung per Device Flow ist damit abgebrochen
+        $this->StopDeviceLogin();
+        $this->UpdateFormField('LoginPopup', 'visible', false);
         return \YouTubeMusic\SymconOAuth::AuthorizeUrl(IPS_GetLicensee());
     }
 
@@ -304,6 +331,9 @@ class YouTubeMusicAccount extends IPSModuleStrict
             $this->SendDebug(__FUNCTION__, 'revoke HTTP ' . $HttpCode, 0);
         }
         $this->ClearTokens();
+        // Zugangsdaten des eigenen Cloud-Projekts nicht aufbewahren
+        $this->WriteAttributeString(\YouTubeMusic\Attribute::ClientId, '');
+        $this->WriteAttributeString(\YouTubeMusic\Attribute::ClientSecret, '');
         $this->WriteAttributeBoolean(\YouTubeMusic\Attribute::SignInExpired, false);
         $this->ApplySignedIn();
         $this->ReloadForm();
@@ -326,8 +356,8 @@ class YouTubeMusicAccount extends IPSModuleStrict
             [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\SymconOAuth::TokenUrl(), ['refresh_token' => $RefreshToken]);
         } else {
             [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\Google::TokenUrl, \YouTubeMusic\DeviceFlow::RefreshRequest(
-                trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientId)),
-                trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientSecret)),
+                $this->ReadAttributeString(\YouTubeMusic\Attribute::ClientId),
+                $this->ReadAttributeString(\YouTubeMusic\Attribute::ClientSecret),
                 $RefreshToken
             ));
         }
@@ -600,6 +630,9 @@ class YouTubeMusicAccount extends IPSModuleStrict
         }
         $Data = json_decode($Body, true);
         $Reason = $CurlError !== '' ? $CurlError : (is_string($Data['error']['message'] ?? null) ? $Data['error']['message'] : 'HTTP ' . $HttpCode);
+        if ($HttpCode === 403 && ($Data['error']['errors'][0]['reason'] ?? '') === 'quotaExceeded') {
+            $Reason = $this->Translate('Daily quota of the YouTube Data API is used up, please try again tomorrow');
+        }
         echo $this->Translate('Could not rate the video') . ': ' . $Reason . PHP_EOL;
         return false;
     }
@@ -638,6 +671,15 @@ class YouTubeMusicAccount extends IPSModuleStrict
             echo $this->Translate('Authorization code expected');
             return;
         }
+        // Nur nach einem Klick auf den Button dieser Instanz (siehe StartSymconLogin)
+        if (time() > $this->OAuthPending) {
+            $this->SendDebug(__FUNCTION__, 'no sign-in started on this instance', 0);
+            $this->UnregisterOAuth(\YouTubeMusic\SymconOAuth::Identifier);
+            echo $this->Translate('No sign-in was started. Please start it again in the instance.');
+            return;
+        }
+        $this->OAuthPending = 0;
+        $this->StopDeviceLogin();
         [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\SymconOAuth::TokenUrl(), ['code' => $_GET['code']]);
         $Result = \YouTubeMusic\DeviceFlow::ParseTokenResponse($HttpCode, $Body);
         $this->SendDebug(__FUNCTION__, 'HTTP ' . $HttpCode . ', ' . $Result['result'] . ' ' . ($Result['error'] ?? '') . $CurlError, 0);
@@ -652,6 +694,8 @@ class YouTubeMusicAccount extends IPSModuleStrict
         ob_end_clean();
         $this->ApplySignedIn();
         $this->ReloadForm();
+        // Der Rückruf wird nur während der Anmeldung gebraucht, den Bezeichner für andere Instanzen freigeben
+        $this->UnregisterOAuth(\YouTubeMusic\SymconOAuth::Identifier);
         echo $this->Translate('Sign-in completed. You can close this window.');
     }
 
@@ -918,8 +962,8 @@ class YouTubeMusicAccount extends IPSModuleStrict
             return;
         }
         [$HttpCode, $Body, $CurlError] = $this->HttpRequest('POST', \YouTubeMusic\Google::TokenUrl, \YouTubeMusic\DeviceFlow::TokenPollRequest(
-            trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientId)),
-            trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientSecret)),
+            $this->ReadAttributeString(\YouTubeMusic\Attribute::ClientId),
+            $this->ReadAttributeString(\YouTubeMusic\Attribute::ClientSecret),
             $this->DeviceCode
         ));
         $Result = \YouTubeMusic\DeviceFlow::ParseTokenResponse($HttpCode, $Body);
@@ -1027,6 +1071,35 @@ class YouTubeMusicAccount extends IPSModuleStrict
     }
 
     /**
+     * Ist das Connect Control dieses Systems aktiv?
+     *
+     * Nur dann gibt es eine ipmagic-Adresse, an die der OAuth-Dienst den Rückruf schickt.
+     * Jeder andere Status (inaktiv, Fehler) oder ein fehlendes Connect Control gilt als nicht aktiv.
+     *
+     * @return bool
+     */
+    private function ConnectActive(): bool
+    {
+        foreach (IPS_GetInstanceListByModuleID(\YouTubeMusic\GUID::ConnectControl) as $ID) {
+            if (IPS_GetInstance($ID)['InstanceStatus'] === IS_ACTIVE) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Beendet eine laufende Anmeldung per Device Flow (Timer und Gerätecode).
+     *
+     * @return void
+     */
+    private function StopDeviceLogin(): void
+    {
+        $this->SetTimerInterval(\YouTubeMusic\Timer::DevicePoll, 0);
+        $this->DeviceCode = '';
+    }
+
+    /**
      * Wurde die Anmeldung über den Symcon-Dienst vorgenommen?
      *
      * @return bool
@@ -1056,8 +1129,8 @@ class YouTubeMusicAccount extends IPSModuleStrict
         // Ohne Anmeldung (oder ohne Client) bleibt der Account aktiv: Suche, Start, Neu, Lyrics und Metadaten gehen anonym.
         // Nur eine abgelaufene Anmeldung ist ein Fehler, bis neu angemeldet oder abgemeldet wird.
         $this->SetStatus($this->ReadAttributeBoolean(\YouTubeMusic\Attribute::SignInExpired) ? self::StatusSignInExpired : IS_ACTIVE);
-        $OwnClient = trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientId)) !== ''
-            && trim($this->ReadPropertyString(\YouTubeMusic\Property::ClientSecret)) !== '';
+        $OwnClient = $this->ReadAttributeString(\YouTubeMusic\Attribute::ClientId) !== ''
+            && $this->ReadAttributeString(\YouTubeMusic\Attribute::ClientSecret) !== '';
         if (!($OwnClient || $this->UsesSymconOAuth()) || !$this->SignedIn()) {
             $this->SetTimerInterval(\YouTubeMusic\Timer::RefreshToken, 0);
             return;
@@ -1076,6 +1149,7 @@ class YouTubeMusicAccount extends IPSModuleStrict
         $this->DeviceCode = '';
         $this->DeviceInterval = 5;
         $this->DeviceExpires = 0;
+        $this->OAuthPending = 0;
         $this->MusicConfig = [];
         $this->DeviceStates = [];
         // Zähler überstehen Neustarts nur bis zum letzten Speichern (siehe HttpRequest)

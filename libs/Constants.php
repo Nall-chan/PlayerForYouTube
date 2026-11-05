@@ -31,6 +31,10 @@ namespace YouTubeMusic {
         public const Player = '{432AD6E7-A9AC-44D5-A26E-962C77035C9D}';
         public const Account = '{B2338A56-F57D-47A5-90BD-2C7E4FE3033B}';
         /**
+         * Connect Control von Symcon (nur lesend: Adresse bei ipmagic)
+         */
+        public const ConnectControl = '{9486D575-BE8C-4ED8-B5B5-20930E26DE6F}';
+        /**
          * Datenfluss Gerät → Account
          */
         public const ToAccount = '{7D679ECD-446F-401E-B62C-FB1CDAB71880}';
@@ -49,8 +53,6 @@ namespace YouTubeMusic {
      */
     class Property
     {
-        public const ClientId = 'ClientId';
-        public const ClientSecret = 'ClientSecret';
         public const PlayerName = 'PlayerName';
         public const HiddenPlayback = 'HiddenPlayback';
         /**
@@ -194,6 +196,11 @@ namespace YouTubeMusic {
      */
     class Attribute
     {
+        /**
+         * Zugangsdaten des eigenen Google-Cloud-Projekts (Anmeldung per Device Flow)
+         */
+        public const ClientId = 'ClientId';
+        public const ClientSecret = 'ClientSecret';
         public const RefreshToken = 'RefreshToken';
         public const AccessToken = 'AccessToken';
         public const AccessExpiry = 'AccessExpiry';
@@ -231,6 +238,14 @@ namespace YouTubeMusic {
     {
         public const DeviceFlow = '';
         public const Symcon = 'symcon';
+    }
+
+    /**
+     * Idents für RequestAction aus dem Formular (onClick kennt UpdateFormField nicht, das ist eine Methode des Moduls)
+     */
+    class FormAction
+    {
+        public const OpenOwnProject = 'OpenOwnProject';
     }
 
     /**

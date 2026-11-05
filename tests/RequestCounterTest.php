@@ -12,6 +12,7 @@ class RequestCounterTest extends TestCase
     {
         $C = static fn (string $Url): string => \YouTubeMusic\RequestCounter::Category($Url);
         $this->assertSame('oauth', $C('https://oauth2.googleapis.com/token'));
+        $this->assertSame('oauth', $C('https://oauth.ipmagic.de/access_token/google_youtube'));
         $this->assertSame('dataApi', $C('https://www.googleapis.com/youtube/v3/channels?part=snippet&mine=true'));
         $this->assertSame('innerTubeMusic', $C('https://music.youtube.com/youtubei/v1/search?prettyPrint=false'));
         $this->assertSame('innerTubeMusic', $C('https://music.youtube.com/'));
