@@ -13,6 +13,14 @@ require_once dirname(__DIR__) . '/libs/RequestCounter.php';
 require_once dirname(__DIR__) . '/libs/Variables.php';
 require_once dirname(__DIR__) . '/libs/TileTexts.php';
 
+// Konstanten des Kernels, die erst ab Symcon 9.1 definiert sind (die Library setzt 9.0 voraus).
+// Vor 9.1 ist INSTANCE_VISUALIZATION_TYPE_HTML_FULLSCREEN gleich HTML (1), ab 9.1 setzt der Kernel den Wert 2.
+foreach (['INSTANCE_VISUALIZATION_TYPE_HTML' => 1, 'INSTANCE_VISUALIZATION_TYPE_HTML_FULLSCREEN' => 1, 'VARIABLE_ACTION_DISABLED' => 1] as $ConstantName => $ConstantValue) {
+    if (!defined($ConstantName)) {
+        define($ConstantName, $ConstantValue);
+    }
+}
+
 /**
  * YouTubeMusicPlayer
  *
