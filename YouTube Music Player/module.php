@@ -5,6 +5,7 @@ declare(strict_types=1);
 eval('declare(strict_types=1);namespace YouTubeMusicPlayer {?>' . file_get_contents(dirname(__DIR__) . '/libs/helper/DebugHelper.php') . '}');
 eval('declare(strict_types=1);namespace YouTubeMusicPlayer {?>' . file_get_contents(dirname(__DIR__) . '/libs/helper/BufferHelper.php') . '}');
 eval('declare(strict_types=1);namespace YouTubeMusicPlayer {?>' . file_get_contents(dirname(__DIR__) . '/libs/helper/SemaphoreHelper.php') . '}');
+eval('declare(strict_types=1);namespace YouTubeMusicPlayer {?>' . file_get_contents(dirname(__DIR__) . '/libs/helper/ParentIOHelper.php') . '}');
 require_once dirname(__DIR__) . '/libs/Constants.php';
 require_once dirname(__DIR__) . '/libs/GoogleOAuth.php';
 require_once dirname(__DIR__) . '/libs/YouTubeLink.php';
@@ -42,6 +43,7 @@ foreach (['INSTANCE_VISUALIZATION_TYPE_HTML' => 1, 'INSTANCE_VISUALIZATION_TYPE_
  * @property array $TileState Zustand des Players im Browser (Kachel-Gerät), mit playerId und updated
  * @property float $TileSeen Zeitpunkt der letzten Meldung irgendeines Browser-Players (Kachel-Gerät)
  * @property array $TileCommands Befehle an den Player im Browser zum Abholen über den WebHook (id, playerId, command, args, time)
+ * @property int $ParentID Verbundener Account (für die Statusmeldungen des Parent, siehe ParentIOHelper)
  * @method bool SendDebug(string $Message, mixed $Data, int $Format)
  * @method bool lock(string $ident)
  * @method void unlock(string $ident)
@@ -51,6 +53,10 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     use \YouTubeMusicPlayer\DebugHelper;
     use \YouTubeMusicPlayer\BufferHelper;
     use \YouTubeMusicPlayer\Semaphore;
+    use \YouTubeMusicPlayer\InstanceStatus {
+        \YouTubeMusicPlayer\InstanceStatus::MessageSink as IOMessageSink;
+        \YouTubeMusicPlayer\InstanceStatus::RequestAction as IORequestAction;
+    }
 
     /**
      * Name der Sperre für Sitzung und Zustand der Lounge.
@@ -148,7 +154,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     {
         //Never delete this line!
         parent::Create();
-        $this->RegisterPropertyInteger(\YouTubeMusic\Property::DeviceType, \YouTubeMusic\DeviceType::ChromeCast);
+        $this->RegisterPropertyInteger(\YouTubeMusic\Property::DeviceType, \YouTubeMusic\DeviceType::Tile);
         $this->RegisterPropertyInteger(\YouTubeMusic\Property::CastInstance, 0);
         // Leer: Name dieser Instanz
         $this->RegisterPropertyString(\YouTubeMusic\Property::PlayerName, '');
@@ -166,6 +172,8 @@ class YouTubeMusicPlayer extends IPSModuleStrict
         $this->RegisterTimer(\YouTubeMusic\Timer::LoungePoll, 0, 'IPS_RequestAction($_IPS[\'TARGET\'], \'' . \YouTubeMusic\TimerAction::LoungePoll . '\', true);');
 
         $this->InitBuffer();
+        // Nur hier: RegisterParent vergleicht mit dem bisherigen Parent, um dessen Meldungen abzumelden
+        $this->ParentID = 0;
         // Normale Kachel und Vollbild über das HTML-SDK gibt es erst ab Symcon 9.1
         $this->SetVisualizationType(defined('INSTANCE_VISUALIZATION_TYPE_HTML_FULLSCREEN') ? constant('INSTANCE_VISUALIZATION_TYPE_HTML_FULLSCREEN') : INSTANCE_VISUALIZATION_TYPE_HTML);
     }
@@ -185,17 +193,15 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             $this->WriteAttributeString(\YouTubeMusic\Attribute::HookSecret, bin2hex(random_bytes(16)));
         }
         $this->RegisterMessage(0, IPS_KERNELSTARTED);
+        // Verbinden, Trennen und Löschen des Accounts erkennen (siehe IOChangeState)
+        $this->RegisterMessage($this->InstanceID, FM_CONNECT);
+        $this->RegisterMessage($this->InstanceID, FM_DISCONNECT);
+        $this->RegisterParent();
         $this->ApplyVariables();
         $this->PushToTiles([\YouTubeMusic\TileMessage::Type => \YouTubeMusic\TileMessage::Reload]);
-        if (!$this->HasAccount()) {
-            $this->SetStatus(self::StatusNoAccount);
+        if (!$this->UpdateStatus()) {
             return;
         }
-        if ($this->IsCast() && $this->CastInstance() === 0) {
-            $this->SetStatus(self::StatusNoCast);
-            return;
-        }
-        $this->SetStatus(IS_ACTIVE);
         // Beim Account anmelden (Typ und Zustand für die Geräteauswahl der anderen Kacheln)
         if (IPS_GetKernelRunlevel() === KR_READY) {
             $this->PushDeviceState();
@@ -207,6 +213,7 @@ class YouTubeMusicPlayer extends IPSModuleStrict
      * MessageSink
      *
      * Nach dem Start von Symcon beim Account anmelden (in ApplyChanges ist der Kernel noch nicht bereit).
+     * Verbinden, Trennen und Statuswechsel des Accounts gehen an den ParentIOHelper (→ IOChangeState).
      *
      * @param  int $TimeStamp
      * @param  int $SenderID
@@ -216,10 +223,15 @@ class YouTubeMusicPlayer extends IPSModuleStrict
      */
     public function MessageSink(int $TimeStamp, int $SenderID, int $Message, array $Data): void
     {
-        if ($Message === IPS_KERNELSTARTED && $this->HasAccount()) {
-            $this->PushDeviceState();
-            $this->ScheduleResume();
+        if ($Message === IPS_KERNELSTARTED) {
+            $this->RegisterParent();
+            if ($this->HasAccount()) {
+                $this->PushDeviceState();
+                $this->ScheduleResume();
+            }
+            return;
         }
+        $this->IOMessageSink($TimeStamp, $SenderID, $Message, $Data);
     }
 
     /**
@@ -310,6 +322,10 @@ class YouTubeMusicPlayer extends IPSModuleStrict
      */
     public function RequestAction(string $Ident, mixed $Value): void
     {
+        // Statusmeldungen des Accounts (ParentIOHelper)
+        if ($this->IORequestAction($Ident, $Value)) {
+            return;
+        }
         switch ($Ident) {
             case \YouTubeMusic\TimerAction::LoungePoll:
                 $this->PollLounge();
@@ -741,6 +757,31 @@ class YouTubeMusicPlayer extends IPSModuleStrict
     public function GetLyrics(string $VideoId): array|false
     {
         return $this->SendToAccount(\YouTubeMusic\AccountFunction::GetLyrics, ['VideoId' => $VideoId]);
+    }
+
+    /**
+     * IOChangeState
+     *
+     * Account verbunden, getrennt, gelöscht oder sein Status hat sich geändert (über ParentIOHelper).
+     * Status neu bewerten; ist der Account aktiv, beim Account anmelden (Gerätezustand für die
+     * Geräteauswahl der anderen Kacheln). Stilles Wiederverbinden nur, wenn die Instanz gerade aktiv wurde.
+     *
+     * @param  int $State Status des Accounts (bei Trennen IS_INACTIVE)
+     * @return void
+     */
+    protected function IOChangeState(int $State): void
+    {
+        $WasActive = $this->GetStatus() === IS_ACTIVE;
+        if (!$this->UpdateStatus()) {
+            return;
+        }
+        if ($State !== IS_ACTIVE || IPS_GetKernelRunlevel() !== KR_READY) {
+            return;
+        }
+        $this->PushDeviceState();
+        if (!$WasActive) {
+            $this->ScheduleResume();
+        }
     }
 
     /**
@@ -1504,6 +1545,25 @@ class YouTubeMusicPlayer extends IPSModuleStrict
             $Texts[$Text] = $this->Translate($Text);
         }
         return $Texts;
+    }
+
+    /**
+     * Status der Instanz aus Account und Einstellungen setzen.
+     *
+     * @return bool true, wenn die Instanz aktiv ist
+     */
+    private function UpdateStatus(): bool
+    {
+        if (!$this->HasAccount()) {
+            $this->SetStatus(self::StatusNoAccount);
+            return false;
+        }
+        if ($this->IsCast() && $this->CastInstance() === 0) {
+            $this->SetStatus(self::StatusNoCast);
+            return false;
+        }
+        $this->SetStatus(IS_ACTIVE);
+        return true;
     }
 
     /**
