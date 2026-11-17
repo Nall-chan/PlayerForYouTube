@@ -157,6 +157,23 @@
 
 ### 2. Changelog
 
+**Version 0.12:**  
+
+**Fehlerbehebungen**  
+
+* Kachel: Ein Browser-„Zurück“ bei maximierter Kachel schloss den Dialog nicht, sondern legte den Titel der Visu über die Kachel. Jetzt reicht ein einziges „Zurück“.  
+
+**Version 0.11:**  
+
+> [!IMPORTANT]
+> Die Client-Daten eines eigenen Cloud-Projekts werden jetzt über die Schaltfläche „Mit eigenem Google-Cloud-Projekt anmelden …“ eingegeben, nicht mehr im Formular. Wer mit eigenem Projekt angemeldet war, muss sich nach dem Update einmal neu anmelden.
+
+**Geändertes Verhalten**  
+
+* YouTube Music Account: Anmeldung über „Mit Google anmelden“ (braucht aktives Symcon Connect), alternativ weiterhin über ein eigenes Cloud-Projekt.  
+* YouTube Music Account: Ist das Tageskontingent der YouTube Data API erschöpft, meldet ein Like das mit einer verständlichen Meldung.  
+* YouTube Music Player: Der Status folgt dem verbundenen Account (ohne oder mit inaktivem Account Fehler 201).  
+
 **Version 0.10:**  
 
 > [!IMPORTANT]
